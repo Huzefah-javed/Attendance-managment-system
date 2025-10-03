@@ -1,6 +1,7 @@
 import { getAttendance, setAttendance } from "../db/queries.student.js"
 
 export async function markingAttendance (req, res, next){
+    if(req.user.Role === "ADMIN") next(401, "please login as student to access this route");
     const {lecSessionId, status} = req.body
     if (!lecSessionId || !status) {
        return res.json({msg: "plz try again or login again"})
@@ -19,6 +20,8 @@ export async function markingAttendance (req, res, next){
 }
 
 export async function checkingAttendance(req, res, next){
+    if(req.user.Role === "ADMIN") next(401, "please login as student to access this route");
+    
         const {subject, student_id, skip=0} = req.body
             if (!subject || !student_id) {
               return  res.json({msg: "select the subject or login again"})
