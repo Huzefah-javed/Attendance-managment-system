@@ -4,14 +4,18 @@ import AdminSessions from "./pages/admin/LectureSession"
 import { AttendanceHistory } from "./pages/attendancehistory"
 import { LoginPage } from "./pages/studentLogin"
 import Attendance from "./pages/markAttendacePage"
+import AdminLogin from "./pages/admin/adminLogin"
+import UserInfo from "./components/user_info"
 
 function App (){
 return(<>
-            {/* <Sidebar/> */}
-          <LoginPage/>
+            <Sidebar/>
+            <UserInfo/>
+          {/* <LoginPage/> */}
+          {/* <AdminLogin/> */}
           {/* <Attendance/> */}
           {/* <AttendanceHistory/> */}
-          {/* <AdminSessions/> */}
+          <AdminSessions/>
           {/* <AdminStudentHistory/> */}
           </>)
 

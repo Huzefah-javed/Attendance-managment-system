@@ -26,6 +26,7 @@ export async function individualAttendanceData(req, res, next){
     res.status(400).json({msg: "please send all detail"});
     
   }
+  
      const data = await gettingIndividualAttendance(rollNo, req.user?.SUBJECT)
      if (data.status == 200) {
         res.status(200).json(data)

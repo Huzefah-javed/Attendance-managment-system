@@ -6,11 +6,15 @@ export async function createSession ({subjectName, sessionEndTime, createdBy}) {
     let result = {status: 0, msg:""}
     try {
         await connection.beginTransaction()
-        const [sessionData] = await connection.query(`INSERT INTO sessions (subject, session_date, start_date, end_date, created_by) VALUES (?, CURDATE(), CURTIME(), ADDTIME(CURTIME(), ?), ?)`, [subjectName, sessionEndTime, createdBy])    
+        const [sessionData] = await connection.query(`INSERT INTO sessions (subject, session_date, start_date, end_date, created_by) VALUES (?, CURDATE(), CURTIME(), ADDTIME(CURTIME(), ?), ?)`, [subjectName, sessionEndTime, createdBy])
+            
         const id= sessionData.insertId
+
         await connection.query("INSERT INTO attendance_table (session_id, student_id, status) SELECT ?, ID, 'absent' FROM student_info", [id])
+
+      const [student_data] =  await connection.query("select student_id, SESSION_ID, STUDENT_NAME, STUDENT_ROLLNO from attendance_table AS A INNER JOIN student_info AS S ON A.student_id = S.ID WHERE A.session_id = ? ", [id])
         await connection.commit()
-       return  result = {status: 201 ,msg:"Session created successfully"}
+       return  result = {status: 201 ,msg:"Session created successfully", data: student_data}
     } catch (err) {
         console.log(err)
         await connection.rollback()

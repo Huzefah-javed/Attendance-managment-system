@@ -20,6 +20,7 @@ export async function markingAttendance (req, res, next){
 }
 
 export async function checkingAttendance(req, res, next){
+    
     if(req.user.Role === "ADMIN") next(401, "please login as student to access this route");
     
         const {subject, student_id, skip=0} = req.body
