@@ -12,12 +12,12 @@ function App (){
 return(<>
             <Sidebar/>
             <UserInfo/>
-            <StudentAttendance/>
+            {/* <StudentAttendance/> */}
           {/* <LoginPage/> */}
           {/* <AdminLogin/> */}
           {/* <Attendance/> */}
           {/* <AttendanceHistory/> */}
-          {/* <AdminSessions/> */}
+          <AdminSessions/>
           {/* <AdminStudentHistory/> */}
           </>)
 
