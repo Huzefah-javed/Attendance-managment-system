@@ -5,6 +5,7 @@ export async function studentLogin({email, password}){
     console.log(res.data)
 }
 
-export function getStudentForAttendance(){
-    
+export async function createLecSession(data){
+   const res = await api.post("admin/create-session", data) 
+   return res.data  
 }

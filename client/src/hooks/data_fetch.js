@@ -4,7 +4,7 @@ import { useEffect } from "react"
     let loading = true
     let error
     let data 
-    let msg;
+    let msg
 
     async function gettingData(){
         try {
@@ -32,5 +32,5 @@ import { useEffect } from "react"
         gettingData()
     }, [])
 
-       return [loading, error, data]
+       return [loading, error,msg, data]
 }

@@ -1,18 +1,38 @@
 import { useState } from "react"
+import { usePostData } from "../../hooks/data_post"
+import { createLecSession } from "../../../apis/teacher_api"
 
 function AdminSession(){
 
 const [session, setSession] = useState({
   subjectName: "",
   sessionEndTime: "",
-   createdBy: ""
+   createdBy: "John"
 })
+const {gettingData, loading, error, msg} = usePostData(createLecSession)
 
 
 function handleFormSubmit(e){
   e.preventDefault()
+  if (session.subjectName|| session.sessionEndTime|| session.createdBy) {
+    gettingData(session);
+  }
   console.log(session)
 }
+if (loading) {
+  return (
+    <p>Loading....</p>
+  )
+}
+
+
+if (msg) {
+  console.log(msg)
+}
+if (error) {
+  console.log(error)
+}
+
   return (
       <div className="min-h-screen bg-gray-50 px-4 py-8 sm:py-12">
   <div className="mx-auto w-full max-w-5xl space-y-6">
@@ -47,7 +67,7 @@ function handleFormSubmit(e){
           {/* End Time */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
-              Session Time limit
+              Session Time Ends at
             </label>
             <input
               type="time"

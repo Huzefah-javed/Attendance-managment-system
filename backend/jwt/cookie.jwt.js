@@ -4,7 +4,7 @@ import { getSessionalData } from "../db/login.session.js";
 export  function assignJWTCookie(data, res){
     const token = jwt.sign(data, process.env.JWT_SECRET)
 
-    res.cookie("scurity_token", token, {
+    res.cookie("security_token", token, {
         httpOnly: true,           
         maxAge: 24 * 60 * 60 * 1000  
     })
@@ -12,7 +12,7 @@ export  function assignJWTCookie(data, res){
 
 export async function cookieVerification(req, res, next){
         try {
-            const jwtCookie = req.cookies.scurity_token;
+            const jwtCookie = req.cookies.security_token;
         const sessionalCookie = req.cookies.sessional_id;
 
         if (jwtCookie && sessionalCookie) {
