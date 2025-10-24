@@ -1,15 +1,23 @@
 import { useState } from "react";
 import { EmailField, PasswordField, SubmitBtn } from "../../components/inputFields";
 import LoginForm from "../../components/LoginForm";
+import { teacherLogin } from "../../../apis/teacher_api";
 
 export default function AdminLogin(){
   const [data, setData] = useState({
-    email:"", rollNo:"", password:""
+    email:"", password:""
   })
 
-  function handleLogin(e){
+  async function handleLogin(e){
     e.preventDefault()
-
+     console.log(data)
+        if(data.password && data.email){
+        const result = await teacherLogin({email: data.email, password: data.password})
+        console.log(result)
+        }
+        setData({
+         rollNo:"", password:""
+      })
   }
      return(
     <>

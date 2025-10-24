@@ -5,6 +5,6 @@ export async function loginStorageSession(ID, role){
 }
 
 export async function getSessionalData(id){
-   const [rows] = await pool.query("SELECT * FROM LOGINSESSION WHERE STUDENT_ID = ?", [id])
+   const [rows] = await pool.query("SELECT * FROM LOGINSESSION WHERE USER_ID = ?", [id])
    return rows[0];
 }

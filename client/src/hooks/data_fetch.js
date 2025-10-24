@@ -1,36 +1,37 @@
 import { useEffect } from "react"
+import { useState } from "react"
 
  export function useFetchData(fetchApiFn){
-    let loading = true
-    let error
-    let data 
-    let msg
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(null)
+    const [msg, setMsg] = useState("")
+    
 
     async function gettingData(){
         try {
+            setLoading(true)
             const result = await fetchApiFn();
-            if (result.status == 201) {
-                data = result?.data || null;
-                msg = result?.msg || "request successful";
-                loading = false;
-                error= false;
+            console.log(result)
+            if (result.status == 200) {
+                setMsg(result?.msg || "request successful");
+                setLoading(false);
+                setError(null);
             }else{
-                loading = false;
-                error= true;
-                msg = result?.msg || "something went wrong";
-                
+                setLoading(false);
+                setError(result?.msg || "something went wrong"
+
+                );
             }
         } catch (error) {
-            loading = false
-            error= true;
-            msg = result?.msg || error.message;
-            
+            setLoading(false);
+            setError(error);
         }
         
     }
+
+
     useEffect(()=>{
         gettingData()
-    }, [])
-
-       return [loading, error,msg, data]
+    },[])
+       return {loading, error, msg}
 }

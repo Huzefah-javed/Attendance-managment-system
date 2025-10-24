@@ -6,7 +6,8 @@ function AdminSession(){
 
 const [session, setSession] = useState({
   subjectName: "",
-  sessionEndTime: "",
+  sessionHour: 0,
+  sessionMin: 0,
    createdBy: "John"
 })
 const {gettingData, loading, error, msg} = usePostData(createLecSession)
@@ -17,8 +18,8 @@ function handleFormSubmit(e){
   if (session.subjectName|| session.sessionEndTime|| session.createdBy) {
     gettingData(session);
   }
-  console.log(session)
 }
+console.log(session)
 if (loading) {
   return (
     <p>Loading....</p>
@@ -55,7 +56,7 @@ if (error) {
             </label>
             <select className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
             onChange={(e)=>setSession((prev)=>({...prev, subjectName: e.target.value}))}>
-              {["OOP", "Digital Logic Design", "Data Structures", "Database Systems"].map((s) => (
+              {["OOP", "DLD", "Data Structures", "Database Systems"].map((s) => (
                 <option key={s} value={s}>
                   {s}
                 </option>
@@ -65,16 +66,53 @@ if (error) {
 
 
           {/* End Time */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Session Time Ends at
-            </label>
-            <input
-              type="time"
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              onChange={(e)=>setSession((prev)=>({...prev, sessionEndTime: e.target.value}))}
-            />
-          </div>
+        <div className="space-y-2">
+  <label className="block text-sm font-medium text-gray-700">
+    Session Time Length
+  </label>
+  <div className="flex items-center gap-3">
+    {/* Hours Dropdown */}
+    <div className="flex-1">
+      <select 
+        name="hours" 
+        id="hours"
+        onChange={(e)=>(setSession((prev)=>({...prev, sessionHour: e.target.value})))} 
+        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-400"
+      >
+        <option value="" disabled selected>Hours</option>
+        <option value="00">00</option>
+        <option value="01">01</option>
+        <option value="02">02</option>
+      </select>
+    </div>
+
+    {/* Separator */}
+    <span className="text-2xl font-bold text-gray-400">:</span>
+
+    {/* Minutes Dropdown */}
+    <div className="flex-1">
+      <select 
+        name="minutes" 
+        id="minutes"
+        onChange={(e)=>(setSession((prev)=>({...prev, sessionMin: e.target.value})))}
+        className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all shadow-sm hover:border-gray-400"
+      >
+        <option value="" disabled selected>Minutes</option>
+        <option value="00">00</option>
+        <option value="10">10</option>
+        <option value="15">15</option>
+        <option value="20">20</option>
+        <option value="25">25</option>
+        <option value="30">30</option>
+        <option value="35">35</option>
+        <option value="40">40</option>
+        <option value="45">45</option>
+        <option value="50">50</option>
+        <option value="55">55</option>
+      </select>
+    </div>
+  </div>
+</div>
         </div>
 
         {/* Submit Button */}

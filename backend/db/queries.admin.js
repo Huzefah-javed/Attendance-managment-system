@@ -44,3 +44,22 @@ export async function createSession ({subjectName, sessionEndTime, createdBy}) {
             return result = {status, msg}
             }
             } 
+    
+    export async function studentsForAttendance (subject){
+        console.log(subject)
+        let result = {status: 0, msg:""}
+        try {
+            const [data] =  await pool.query('SELECT s.id, s.STUDENT_NAME, s.STUDENT_ROLLNO, se.subject, se.SESSION_DATE from attendance_table as a inner join student_info as s inner join sessions as se on a.student_id = s.ID and a.session_id = se.SESSION_ID  where END_DATE >= current_time() && SESSION_DATE = curdate() && se.subject = ? && IS_ATTENDANCE_MARKED = false', [subject]) 
+           
+            if (data.length == 0) {
+                return  result = {status: 200 ,msg:"No session found for student attendance"}    
+            }else{
+                return  result = {status: 200 ,msg:data}
+            }
+        } catch (err) {
+            console.log(err)
+            const status = 500
+            const msg = "something went wrong"
+            return result = {status, msg}
+            }
+            } 
