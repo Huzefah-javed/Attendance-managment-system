@@ -1,4 +1,4 @@
-import { createSession, gettingIndividualAttendance, studentsForAttendance } from "../db/queries.admin.js";
+import { createSession, gettingIndividualAttendance, lectureSessionsHistory, studentsForAttendance } from "../db/queries.admin.js";
 
 
 export async function creatingSession(req, res,next){
@@ -7,6 +7,8 @@ export async function creatingSession(req, res,next){
   
   const {subjectName,  sessionHour="00", sessionMin, createdBy} = req.body;
   
+  console.log(subjectName, sessionMin, createdBy)
+
   if (!subjectName || !sessionMin || !createdBy) {
     return res.status(400).json({msg: "please send all detail"});
   }
@@ -49,4 +51,25 @@ export async function individualAttendanceData(req, res, next){
      }else{
       next(data)
      }
+}
+
+
+export async function markingStudentAttendance(req, res){
+  if(req.user.Role === "ADMIN") next(401, "please login as teacher to access this route");
+  console.log(req.body)
+  const {presentStudents} = req.body;
+
+  const response = await markingPresentOfStudents(presentStudents)
+
+}
+
+export async function getSessionHistory(req, res, next){
+  if(req.user.Role === "ADMIN") next(401, "please login as teacher to access this route");
+  const subject= req.user.SUBJECT
+  const response = await lectureSessionsHistory(subject)
+  if (response.status == 200) {
+    res.json(response)
+  }else{
+    next(response)
+  }
 }

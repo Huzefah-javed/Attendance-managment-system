@@ -7,10 +7,10 @@ import { useState } from "react"
     const [msg, setMsg] = useState("")
     
 
-    async function gettingData(data){
+    async function gettingData(...data){
         try {
             setLoading(true)
-            const result = await postApiFn(data);
+            const result = await postApiFn(...data);
             console.log(result)
             if (result.status == 201) {
                 setMsg(result?.msg || "request successful");

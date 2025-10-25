@@ -1,10 +1,12 @@
 import { Router } from "express";
-import { creatingSession, gettingStudentForAttendance, individualAttendanceData } from "../controller/admin.controller.js";
+import { creatingSession, getSessionHistory, gettingStudentForAttendance, individualAttendanceData, markingStudentAttendance } from "../controller/admin.controller.js";
 
 const adminRouter = Router();
 
 adminRouter.post("/create-session", creatingSession)
-adminRouter.post("/mark-attendance", gettingStudentForAttendance)
+adminRouter.get("/get-students", gettingStudentForAttendance)
+adminRouter.get("/sessions-history", getSessionHistory)
+adminRouter.post("/mark-attendance", markingStudentAttendance)
 adminRouter.post("/individual-attendance-history", individualAttendanceData)
 
 export default adminRouter;

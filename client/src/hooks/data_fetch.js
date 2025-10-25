@@ -29,9 +29,5 @@ import { useState } from "react"
         
     }
 
-
-    useEffect(()=>{
-        gettingData()
-    },[])
-       return {loading, error, msg}
+       return {gettingData, loading, error, msg}
 }

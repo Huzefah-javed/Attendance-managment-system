@@ -1,6 +1,8 @@
 import { useState } from "react"
 import { usePostData } from "../../hooks/data_post"
-import { createLecSession } from "../../../apis/teacher_api"
+import { createLecSession, sessionHistory } from "../../../apis/teacher_api"
+import { useFetchData } from "../../hooks/data_fetch"
+import { Activity } from "react"
 
 function AdminSession(){
 
@@ -11,7 +13,7 @@ const [session, setSession] = useState({
    createdBy: "John"
 })
 const {gettingData, loading, error, msg} = usePostData(createLecSession)
-
+const fetch = useFetchData(sessionHistory)
 
 function handleFormSubmit(e){
   e.preventDefault()
@@ -20,19 +22,24 @@ function handleFormSubmit(e){
   }
 }
 console.log(session)
-if (loading) {
+if (loading || fetch.loading) {
   return (
     <p>Loading....</p>
   )
 }
 
 
-if (msg) {
-  console.log(msg)
+if (msg || fetch.msg) {
+  console.log(msg || fetch.msg)
 }
-if (error) {
-  console.log(error)
+if (error || fetch.error) {
+  console.log(error || fetch.error)
 }
+
+function handleLoadSessions(){
+  fetch.gettingData()
+}
+
 
   return (
       <div className="min-h-screen bg-gray-50 px-4 py-8 sm:py-12">
@@ -123,6 +130,48 @@ if (error) {
         </div>
       </form>
     </div>
+        <div className="w-full flex justify-between">
+      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900">
+        Last 10 sessions details
+      </h1>
+       <button 
+           onClick={handleLoadSessions}
+           className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+              Refresh sessions history
+        </button>
+        </div>
+               <table className="w-full bg-white rounded-lg shadow-md border border-gray-200">
+
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">lecture Id</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject</th>
+                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {typeof(fetch.msg) != "string" && fetch.msg.map((student) => (
+                <tr key={student.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-6 py-4 text-gray-600">{student.SESSION_ID}</td>
+                  <td className="px-6 py-4 text-gray-600">{student.SESSION_DATE.slice(0, 10).replaceAll("-", "/")}</td>
+                  <td className="px-6 py-4 text-gray-600">{student.SUBJECT}</td>
+                  <td className="px-6 py-4">
+                    <div className="flex gap-3 justify-center">
+                      {/* <Activity mode={student.IS_ATTENDANCE_MARKED && new == new Date(student.SESSION_DATE)}></Activity> */}
+                      <button 
+                      
+                      className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+                        Mark Attendance
+                      </button>
+                    
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            </table>
+
   </div>
 </div>
 

@@ -49,7 +49,7 @@ export async function createSession ({subjectName, sessionEndTime, createdBy}) {
         console.log(subject)
         let result = {status: 0, msg:""}
         try {
-            const [data] =  await pool.query('SELECT s.id, s.STUDENT_NAME, s.STUDENT_ROLLNO, se.subject, se.SESSION_DATE from attendance_table as a inner join student_info as s inner join sessions as se on a.student_id = s.ID and a.session_id = se.SESSION_ID  where END_DATE >= current_time() && SESSION_DATE = curdate() && se.subject = ? && IS_ATTENDANCE_MARKED = false', [subject]) 
+            const [data] =  await pool.query('SELECT s.id, s.STUDENT_NAME, s.STUDENT_ROLLNO, se.subject, se.SESSION_DATE from attendance_table as a inner join student_info as s inner join sessions as se on a.student_id = s.ID and a.session_id = se.SESSION_ID  where END_DATE >= current_time() && SESSION_DATE = curdate() && se.subject = ? && IS_ATTENDANCE_MARKED = false order by s.STUDENT_ROLLNO', [subject]) 
            
             if (data.length == 0) {
                 return  result = {status: 200 ,msg:"No session found for student attendance"}    
@@ -63,3 +63,25 @@ export async function createSession ({subjectName, sessionEndTime, createdBy}) {
             return result = {status, msg}
             }
             } 
+
+export async function markingPresentOfStudents(presentStudents){
+    let result = {status:0, msg:""}
+    try {
+        pool.query("insert ")
+    } catch (error) {
+        
+    }
+}
+
+export async function lectureSessionsHistory(subject){
+    let result = {status:0, msg:""}
+    console.log(subject)
+    try {
+     const [data] =  await pool.query("select SESSION_ID, SUBJECT, SESSION_DATE, IS_ATTENDANCE_MARKED from SESSIONS WHERE SUBJECT = ? order by session_id desc limit 10 ", [subject])
+     return result= {status :200, msg: data};
+    } catch (error) {
+        const status = 500
+        const msg = "Something went wrong"
+        return result= {status, msg};
+    }
+}

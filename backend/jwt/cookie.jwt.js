@@ -34,12 +34,12 @@ export async function cookieVerification(req, res, next){
                 return res.status(401).json({ msg: "Session expired. Please log in again." });
                 }
 
+                console.log(userData)
                 const {
                     STUDENT_ID,
                     STUDENT_NAME,
                     STUDENT_ROLLNO
                 } = userData
-
                  assignJWTCookie({
                     ID: STUDENT_ID,
                     STUDENT_NAME,
