@@ -1,8 +1,9 @@
 import { useState } from "react"
 import { usePostData } from "../../hooks/data_post"
-import { createLecSession, sessionHistory } from "../../../apis/teacher_api"
+import { createLecSession, getStudentForAttendance, sessionHistory } from "../../../apis/teacher_api"
 import { useFetchData } from "../../hooks/data_fetch"
 import { Activity } from "react"
+import StudentAttendance from "./mark_attendance"
 
 function AdminSession(){
 
@@ -12,6 +13,8 @@ const [session, setSession] = useState({
   sessionMin: 0,
    createdBy: "John"
 })
+const [sessionId, setSessionId]  = useState(null)
+  const studentsForAttendance = useFetchData(getStudentForAttendance)
 const {gettingData, loading, error, msg} = usePostData(createLecSession)
 const fetch = useFetchData(sessionHistory)
 
@@ -39,7 +42,14 @@ if (error || fetch.error) {
 function handleLoadSessions(){
   fetch.gettingData()
 }
+function handleStudentForAttendance(sessionId){
+    studentsForAttendance.gettingData(sessionId)
+    setSessionId(sessionId)
+}
 
+function handleCloseAttendancePage(){
+  studentsForAttendance.setMsg("")
+}
 
   return (
       <div className="min-h-screen bg-gray-50 px-4 py-8 sm:py-12">
@@ -154,16 +164,17 @@ function handleLoadSessions(){
               {typeof(fetch.msg) != "string" && fetch.msg.map((student) => (
                 <tr key={student.id} className="hover:bg-gray-50 transition-colors">
                   <td className="px-6 py-4 text-gray-600">{student.SESSION_ID}</td>
-                  <td className="px-6 py-4 text-gray-600">{student.SESSION_DATE.slice(0, 10).replaceAll("-", "/")}</td>
+                  <td className="px-6 py-4 text-gray-600">{new Date(student.SESSION_DATE).toLocaleDateString('en-GB')}</td>
                   <td className="px-6 py-4 text-gray-600">{student.SUBJECT}</td>
                   <td className="px-6 py-4">
                     <div className="flex gap-3 justify-center">
-                      {/* <Activity mode={student.IS_ATTENDANCE_MARKED && new == new Date(student.SESSION_DATE)}></Activity> */}
-                      <button 
-                      
+                      {(!(student.IS_ATTENDANCE_MARKED) && new Date().toLocaleDateString() == new Date(student.SESSION_DATE).toLocaleDateString() && new Date().getTime() < new Date(student.SESSION_DATE.slice(0,10) + "T"+ student.END_DATE +".000Z").getTime() )? 
+
+                      (<button 
+                      onClick={()=>handleStudentForAttendance(student.SESSION_ID)}
                       className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
                         Mark Attendance
-                      </button>
+                      </button>):(<p className="px-6 py-4 text-gray-600">No action can be performed</p>)}
                     
                     </div>
                   </td>
@@ -172,7 +183,19 @@ function handleLoadSessions(){
             </tbody>
             </table>
 
+  <div hidden={!studentsForAttendance.msg} className={`p-10 w-screen bg-[#00000042] absolute ${studentsForAttendance.msg? "top-0":"top-full"} left-0  transition-all duration-200`}>
+    <button
+    onClick={handleCloseAttendancePage}
+    className="absolute top-15 right-13 px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">close</button>
+  <StudentAttendance 
+    loading={studentsForAttendance.loading}
+    error={studentsForAttendance.error}
+    msg={studentsForAttendance.msg}
+    sessionId={sessionId}
+    />
+    </div>
   </div>
+  
 </div>
 
   )

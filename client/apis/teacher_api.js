@@ -10,13 +10,13 @@ export async function createLecSession(data){
    return res.data  
 }
 
-export async function getStudentForAttendance(){
-   const res = await api.get("admin/get-students") 
+export async function getStudentForAttendance(...args){
+   const res = await api.get(`admin/get-students/${args[0]}`) 
    return res.data  
 }
 
 export async function markingAttendance(...args){
-   const response = await api.post("/admin/mark-attendance", {presentStudents:args[0]})
+   const response = await api.post("/admin/mark-attendance", {sessionId:args[0], presentStudents:args[1]})
    return response.data
 }
 

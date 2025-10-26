@@ -7,10 +7,10 @@ import { useState } from "react"
     const [msg, setMsg] = useState("")
     
 
-    async function gettingData(){
+    async function gettingData(...args){
         try {
             setLoading(true)
-            const result = await fetchApiFn();
+            const result = await fetchApiFn(...args);
             console.log(result)
             if (result.status == 200) {
                 setMsg(result?.msg || "request successful");
@@ -29,5 +29,5 @@ import { useState } from "react"
         
     }
 
-       return {gettingData, loading, error, msg}
+       return {gettingData, setMsg, loading, error, msg}
 }

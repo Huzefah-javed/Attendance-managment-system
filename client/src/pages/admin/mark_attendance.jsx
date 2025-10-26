@@ -3,9 +3,8 @@ import { createLecSession, getStudentForAttendance, markingAttendance } from "..
 import { useFetchData } from "../../hooks/data_fetch";
 import { usePostData } from "../../hooks/data_post";
 
-export default function StudentAttendance() {
+export default function StudentAttendance({loading, error, msg, sessionId}) {
   const [presentStudents, setPresentStudents] = useState([])  
-  const {loading, msg, error} = useFetchData(getStudentForAttendance)
   const postData = usePostData(markingAttendance) 
 
 if (loading || postData.loading) {
@@ -17,23 +16,27 @@ if(error || postData.error){
 }
 
 function handlePresentStudent(studentId){
-    setPresentStudents((prev)=>([...prev, studentId]))     
+
+  if (!presentStudents.includes(studentId)) {
+      setPresentStudents((prev)=>([...prev, studentId]))     
+    }
+
 }
 
 async function handleAttendance(){
-  postData.gettingData(presentStudents)
+  postData.gettingData(sessionId ,presentStudents)
 }
 
 console.log("present student: " ,presentStudents)
   return (
-    <div className="p-4">
+    <div className="p-4 bg-white">
     <div className=" space-y-6 mb-6">
     <div className="space-y-2">
       <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900">
-        Create Lecture Session
+       Lecture Attendance
       </h1>
       <p className="text-sm sm:text-base text-gray-600">
-        Configure a new lecture attendance session for students.
+       lecture attendance for session id {sessionId}
       </p>
     </div>
     </div>
@@ -64,7 +67,7 @@ console.log("present student: " ,presentStudents)
                     </div>
                   </td>
                   <td className="px-6 py-4 text-gray-600">{student.STUDENT_ROLLNO}</td>
-                  <td className="px-6 py-4 text-gray-600">{student.SESSION_DATE.slice(0, 10).replaceAll("-", "/")}</td>
+                  <td className="px-6 py-4 text-gray-600">{new Date(student.SESSION_DATE).toLocaleDateString('en-GB')}</td>
                   <td className="px-6 py-4 text-gray-600">{student.subject}</td>
                   <td className="px-6 py-4">
                     <div className="flex gap-3 justify-center">
