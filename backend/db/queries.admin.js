@@ -3,8 +3,8 @@ import pool from "./pool.js"
 
 export async function createSession ({subjectName, sessionEndTime, createdBy}) {
      const connection = await pool.getConnection();
-    let result = {status: 0, msg:""}
-    try {
+     let result = {status: 0, msg:""}
+     try {
         await connection.beginTransaction()
         const [sessionData] = await connection.query(`INSERT INTO sessions (subject, session_date, start_date, end_date, created_by) VALUES (?, CURDATE(), CURTIME(), ADDTIME(CURTIME(), ?), ?)`, [subjectName, sessionEndTime, createdBy])
             
@@ -13,7 +13,7 @@ export async function createSession ({subjectName, sessionEndTime, createdBy}) {
         await connection.query("INSERT INTO attendance_table (session_id, student_id, status) SELECT ?, ID, 'absent' FROM student_info", [id])
 
         await connection.commit()
-       return  result = {status: 201 ,msg:"Session created successfully"}
+        return  result = {status: 201 ,msg:"Session created successfully"}
     } catch (err) {
         console.log(err)
         await connection.rollback()
@@ -45,12 +45,11 @@ export async function createSession ({subjectName, sessionEndTime, createdBy}) {
             }
             } 
     
-    export async function studentsForAttendance (subject){
-        console.log(subject)
+    export async function studentsForAttendance (sessionId){
         let result = {status: 0, msg:""}
         try {
-            const [data] =  await pool.query('SELECT s.id, s.STUDENT_NAME, s.STUDENT_ROLLNO, se.subject, se.SESSION_DATE from attendance_table as a inner join student_info as s inner join sessions as se on a.student_id = s.ID and a.session_id = se.SESSION_ID  where END_DATE >= current_time() && SESSION_DATE = curdate() && se.subject = ? && IS_ATTENDANCE_MARKED = false order by s.STUDENT_ROLLNO', [subject]) 
-           
+            const [data] =  await pool.query('SELECT s.id, s.STUDENT_NAME, s.STUDENT_ROLLNO, se.subject, se.SESSION_DATE from attendance_table as a inner join student_info as s inner join sessions as se on a.student_id = s.ID and a.session_id = se.SESSION_ID  where se.SESSION_ID = ?', [sessionId]) 
+            
             if (data.length == 0) {
                 return  result = {status: 200 ,msg:"No session found for student attendance"}    
             }else{
@@ -61,14 +60,24 @@ export async function createSession ({subjectName, sessionEndTime, createdBy}) {
             const status = 500
             const msg = "something went wrong"
             return result = {status, msg}
-            }
-            } 
-
-export async function markingPresentOfStudents(presentStudents){
-    let result = {status:0, msg:""}
-    try {
-        pool.query("insert ")
-    } catch (error) {
+        }
+    } 
+    export async function markingPresentOfStudents(sessionId,  presentStudents){
+        let result = {status:0, msg:""}
+        const connection = await pool.getConnection();
+        try {
+           await connection.beginTransaction()
+            await  connection.query("update attendance_table set status = 'present' where session_id = ? and student_id in (?)", [sessionId, presentStudents])
+            await connection.query("update sessions set IS_ATTENDANCE_MARKED = true where session_id = ?", [sessionId])
+            await connection.commit()
+            return result = {status: 200, msg: "attendance successfully done"}
+            
+        } catch (error) {
+            console.log(error)
+            const status = 500
+            const msg = "something went wrong"
+            await connection.rollback()
+            return result = {status, msg}
         
     }
 }
@@ -77,7 +86,7 @@ export async function lectureSessionsHistory(subject){
     let result = {status:0, msg:""}
     console.log(subject)
     try {
-     const [data] =  await pool.query("select SESSION_ID, SUBJECT, SESSION_DATE, IS_ATTENDANCE_MARKED from SESSIONS WHERE SUBJECT = ? order by session_id desc limit 10 ", [subject])
+     const [data] =  await pool.query("select SESSION_ID, SUBJECT, SESSION_DATE, END_DATE, IS_ATTENDANCE_MARKED from SESSIONS WHERE SUBJECT = ? order by session_id desc limit 10 ", [subject])
      return result= {status :200, msg: data};
     } catch (error) {
         const status = 500

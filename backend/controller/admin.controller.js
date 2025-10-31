@@ -1,4 +1,4 @@
-import { createSession, gettingIndividualAttendance, lectureSessionsHistory, studentsForAttendance } from "../db/queries.admin.js";
+import { createSession, gettingIndividualAttendance, lectureSessionsHistory, markingPresentOfStudents, studentsForAttendance } from "../db/queries.admin.js";
 
 
 export async function creatingSession(req, res,next){
@@ -25,10 +25,9 @@ export async function creatingSession(req, res,next){
 export async function gettingStudentForAttendance(req, res, next){
   if(req.user.Role === "ADMIN") next(401, "please login as teacher to access this route");
     //  date, subject, ismarked, duration, 
-    
-    const subject = req.user.SUBJECT;
+    const sessionId =  req.params.sessionId
 
-   const response = await studentsForAttendance(subject)
+   const response = await studentsForAttendance(sessionId)
    if (response.status == 200) {
     return res.json(response)
    }else{
@@ -54,12 +53,20 @@ export async function individualAttendanceData(req, res, next){
 }
 
 
-export async function markingStudentAttendance(req, res){
+export async function markingStudentAttendance(req, res, next){
   if(req.user.Role === "ADMIN") next(401, "please login as teacher to access this route");
-  console.log(req.body)
-  const {presentStudents} = req.body;
+  const {sessionId, presentStudents} = req.body;
+  if (!sessionId) {
+    return res.json({status: 401, msg : "something went wrong ,please try again"})
+  }
+  console.log("outside")
+  const response = await markingPresentOfStudents(sessionId, presentStudents)
 
-  const response = await markingPresentOfStudents(presentStudents)
+  if (response.status == 200) {
+    res.json(response)
+  }else{
+    next(response)
+  }
 
 }
 

@@ -4,7 +4,7 @@ import { creatingSession, getSessionHistory, gettingStudentForAttendance, indivi
 const adminRouter = Router();
 
 adminRouter.post("/create-session", creatingSession)
-adminRouter.get("/get-students", gettingStudentForAttendance)
+adminRouter.get("/get-students/:sessionId", gettingStudentForAttendance)
 adminRouter.get("/sessions-history", getSessionHistory)
 adminRouter.post("/mark-attendance", markingStudentAttendance)
 adminRouter.post("/individual-attendance-history", individualAttendanceData)

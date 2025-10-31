@@ -7,6 +7,7 @@ import Attendance from "./pages/markAttendacePage"
 import AdminLogin from "./pages/admin/adminLogin"
 import UserInfo from "./components/user_info"
 import StudentAttendance from "./pages/admin/mark_attendance"
+import LectureDetailHistory from "./pages/admin/lectureDetailHistory"
 
 function App (){
 return(<>
@@ -17,7 +18,8 @@ return(<>
           {/* <AdminLogin/> */}
           {/* <Attendance/> */}
           {/* <AttendanceHistory/> */}
-          <AdminSessions/>
+          {/* <AdminSessions/> */}
+          <LectureDetailHistory/>
           {/* <AdminStudentHistory/> */}
           </>)
 

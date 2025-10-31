@@ -45,12 +45,12 @@ function handleLoadSessions(){
 function handleStudentForAttendance(sessionId){
     studentsForAttendance.gettingData(sessionId)
     setSessionId(sessionId)
+
 }
 
 function handleCloseAttendancePage(){
   studentsForAttendance.setMsg("")
 }
-
   return (
       <div className="min-h-screen bg-gray-50 px-4 py-8 sm:py-12">
   <div className="mx-auto w-full max-w-5xl space-y-6">
@@ -154,25 +154,25 @@ function handleCloseAttendancePage(){
 
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">lecture Id</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Date</th>
-                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Subject</th>
-                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Action</th>
+                <th className="px-3 py-2 text-left text-sm font-semibold text-gray-700">lecture Id</th>
+                <th className="px-3 py-2 text-left text-sm font-semibold text-gray-700">Date</th>
+                <th className="px-3 py-2 text-left text-sm font-semibold text-gray-700">Subject</th>
+                <th className="px-3 py-2 text-center text-sm font-semibold text-gray-700">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {typeof(fetch.msg) != "string" && fetch.msg.map((student) => (
                 <tr key={student.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-6 py-4 text-gray-600">{student.SESSION_ID}</td>
-                  <td className="px-6 py-4 text-gray-600">{new Date(student.SESSION_DATE).toLocaleDateString('en-GB')}</td>
-                  <td className="px-6 py-4 text-gray-600">{student.SUBJECT}</td>
-                  <td className="px-6 py-4">
-                    <div className="flex gap-3 justify-center">
-                      {(!(student.IS_ATTENDANCE_MARKED) && new Date().toLocaleDateString() == new Date(student.SESSION_DATE).toLocaleDateString() && new Date().getTime() < new Date(student.SESSION_DATE.slice(0,10) + "T"+ student.END_DATE +".000Z").getTime() )? 
+                  <td className="px-3 py-2 text-gray-600">{student.SESSION_ID}</td>
+                  <td className="px-3 py-2 text-gray-600">{new Date(student.SESSION_DATE).toLocaleDateString('en-GB')}</td>
+                  <td className="px-3 py-2 text-gray-600">{student.SUBJECT}</td>
+                  <td className="px-1 py-1">
+                    <div className="flex gap-1 justify-center">
+                      {(!(student.IS_ATTENDANCE_MARKED) && new Date().toLocaleDateString() == new Date(student.SESSION_DATE).toLocaleDateString() && new Date().getTime() < new Date((new Date(student.SESSION_DATE).toLocaleDateString('en-CA') + "T"+ student.END_DATE +".000Z")).getTime() )? 
 
                       (<button 
                       onClick={()=>handleStudentForAttendance(student.SESSION_ID)}
-                      className="px-6 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+                      className="px-3 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
                         Mark Attendance
                       </button>):(<p className="px-6 py-4 text-gray-600">No action can be performed</p>)}
                     
