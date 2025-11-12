@@ -20,7 +20,12 @@ export async function markingAttendance(...args){
    return response.data
 }
 
-export async function sessionHistory(){
-   const response = await api.get("/admin/sessions-history")
+export async function latestSessionHistory(){
+   const response = await api.get("/admin/latest-sessions-history")
+   return response.data
+}
+
+export async function sessionHistory(skip){
+   const response = await api.post("/admin/sessions-history", {skip})
    return response.data
 }

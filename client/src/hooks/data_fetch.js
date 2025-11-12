@@ -2,6 +2,7 @@ import { useEffect } from "react"
 import { useState } from "react"
 
  export function useFetchData(fetchApiFn){
+    
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [msg, setMsg] = useState("")

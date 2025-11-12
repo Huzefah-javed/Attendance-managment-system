@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { usePostData } from "../../hooks/data_post"
-import { createLecSession, getStudentForAttendance, sessionHistory } from "../../../apis/teacher_api"
+import { createLecSession, getStudentForAttendance, latestSessionHistory } from "../../../apis/teacher_api"
 import { useFetchData } from "../../hooks/data_fetch"
 import { Activity } from "react"
 import StudentAttendance from "./mark_attendance"
@@ -16,7 +16,7 @@ const [session, setSession] = useState({
 const [sessionId, setSessionId]  = useState(null)
   const studentsForAttendance = useFetchData(getStudentForAttendance)
 const {gettingData, loading, error, msg} = usePostData(createLecSession)
-const fetch = useFetchData(sessionHistory)
+const fetch = useFetchData(latestSessionHistory)
 
 function handleFormSubmit(e){
   e.preventDefault()
