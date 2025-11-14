@@ -99,7 +99,7 @@ export async function lectureSessionsHistory(subject, skip=0){
     let result = {status:0, msg:""}
     console.log(subject)
     try {
-     const [data] =  await pool.query(`select SESSION_ID, SUBJECT, SESSION_DATE, END_DATE, IS_ATTENDANCE_MARKED from SESSIONS WHERE SUBJECT = ? order by session_id desc limit 10 offset ?`, [subject, skip])
+     const [data] =  await pool.query(`select SESSION_ID, SUBJECT, SESSION_DATE, END_DATE, IS_ATTENDANCE_MARKED from SESSIONS WHERE SUBJECT = ? order by session_id desc limit 12 offset ?`, [subject, skip])
      return result= {status :200, msg: data};
     } catch (error) {
         const status = 500

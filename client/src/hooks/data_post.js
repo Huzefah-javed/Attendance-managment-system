@@ -11,22 +11,18 @@ import { useState } from "react"
         try {
             setLoading(true)
             const result = await postApiFn(...data);
-            console.log(result)
-            if (result.status == 201) {
+            if (result.status == 201 || 200) {
                 setMsg(result?.msg || "request successful");
                 setLoading(false);
                 setError(null);
             }else{
                 setLoading(false);
-                setError(result?.msg || "something went wrong"
-
-                );
+                setError(result?.msg || "something went wrong");
             }
         } catch (error) {
             setLoading(false);
             setError(error);
         }
-        
     }
        return {gettingData, loading, error, msg}
 }
