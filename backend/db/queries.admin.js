@@ -95,11 +95,31 @@ export async function latestSessionsHistory(subject){
     }
 }
 
-export async function lectureSessionsHistory(subject, skip=0){
+export async function lectureSessionsHistory(subject, skip){
     let result = {status:0, msg:""}
-    console.log(subject)
+    let pagination = skip *10
+    console.log(pagination)
     try {
-     const [data] =  await pool.query(`select SESSION_ID, SUBJECT, SESSION_DATE, END_DATE, IS_ATTENDANCE_MARKED from SESSIONS WHERE SUBJECT = ? order by session_id desc limit 12 offset ?`, [subject, skip])
+     const [data] =  await pool.query(`select SESSION_ID, SUBJECT, SESSION_DATE, END_DATE, IS_ATTENDANCE_MARKED from SESSIONS WHERE SUBJECT = ? order by session_id desc limit 10 offset ?`, [subject, pagination])
+     return result= {status :200, msg: data};
+    } catch (error) {
+        const status = 500
+        const msg = "Something went wrong"
+        return result= {status, msg};
+    }
+}
+
+export async function getSessionHistoryInDetails(sessionId){
+    let result = {status:0, msg:""}
+    try {
+     const [data] =  await pool.query(`select 
+                        Stt_i.STUDENT_NAME,
+                        Stt_i.STUDENT_ROLLNO,
+                        Att.status
+                        from student_info as Stt_i
+                        left join attendance_table as Att
+                        on Stt_i.ID = Att.student_id
+                        where session_id = ?`, [sessionId])
      return result= {status :200, msg: data};
     } catch (error) {
         const status = 500

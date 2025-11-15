@@ -1,4 +1,4 @@
-import { createSession, gettingIndividualAttendance, latestSessionsHistory, lectureSessionsHistory, markingPresentOfStudents, studentsForAttendance } from "../db/queries.admin.js";
+import { createSession, getSessionHistoryInDetails, gettingIndividualAttendance, latestSessionsHistory, lectureSessionsHistory, markingPresentOfStudents, studentsForAttendance } from "../db/queries.admin.js";
 
 
 export async function creatingSession(req, res,next){
@@ -88,6 +88,26 @@ export async function getSessionHistory(req, res, next){
   const response = await lectureSessionsHistory(subject, skip)
   if (response.status == 200) {
     res.json(response)
+  }else{
+    next(response)
+  }
+}
+
+export async function getSessionHistoryDetails(req, res, next){
+  if(req.user.Role === "ADMIN") next(401, "please login as teacher to access this route");
+        const { sessionId }  =req.body
+        const response = await getSessionHistoryInDetails(sessionId)
+  if (response.status == 200) {
+      let present_students = 0;
+      let total_students = response.msg.length;
+      response.msg.map((student)=>{
+        if(student.status == 'present' ){
+          present_students++;
+        }    
+      })
+      let absent_students= total_students - present_students
+
+    res.json({status : response.status, msg:{subject: req.user.SUBJECT, present_students, absent_students, total_students, student_data: response.msg}})
   }else{
     next(response)
   }
