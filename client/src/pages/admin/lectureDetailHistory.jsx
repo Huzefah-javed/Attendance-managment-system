@@ -3,91 +3,83 @@ import { sessionHistory, sessionHistoryDetails } from "../../../apis/teacher_api
 import Card from "../../components/Card";
 import { usePostData } from "../../hooks/data_post";
 import { useCallback } from "react";
+import { DonutChartComponent } from "../../components/donutChart";
 
 export default function LectureDetailHistory(){
 
-const [sessionsHistoryData, setSessionHistoryData] = useState([])
 const [selectedSessionId, setSelectedSessionId]= useState(-1)
-const [skip, setSkip]= useState(1)
+const [page, setPage]= useState(0)
 const sessions = usePostData(sessionHistory)
 const sessionDetails = usePostData(sessionHistoryDetails)
 
 const sessionsRef = useRef(null);
 
-  const ufc=useCallback(async()=>{
   
-  if(sessionsRef.current.scrollTop + sessionsRef.current.clientHeight === sessionsRef.current.scrollHeight){
-    await sessions.gettingData(skip)
-    
-if (sessions.msg) {
-   sessions.msg.map((singleSession)=>{
-        setSessionHistoryData((prev)=>([...prev, singleSession]))
-      })
-}
-    setSkip((prev)=>prev+1)
-    console.log(sessions.msg)
-      console.log("the skip is ",skip)
-    }
-  },[skip])
-
 useEffect(()=>{
-      if(sessionsHistoryData.length === 0){
+
+      if(!sessions.msg){
         const loadData = async()=>{
           await sessions.gettingData(0)
-          setSessionHistoryData(sessions.msg)
         }
         loadData()
     }
-    if (sessionsRef.current) {
-      
-      sessionsRef.current.addEventListener('scroll',ufc)
-    }
-    return ()=>{
-      
-      if (sessionsRef.current) {
-        sessionsRef.current.removeEventListener("scroll", ufc)
-      }
-    }
 
-  },[sessionsRef.current, ufc])
+  },[sessionsRef.current])
   
-if (sessions.loading || sessionDetails.loading) {
-  return <h1>Loading....</h1>
-}
+  if (sessions.loading || sessionDetails.loading) {
+    return <h1>Loading....</h1>
+  }
   
-if(sessions.error || sessionDetails.error){
-  console.log(sessions.error || sessionDetails.error)
-}
+  if(sessions.error || sessionDetails.error){
+    console.log(sessions.error || sessionDetails.error)
+  }
+  
+  
+  async function handleFetchSession(sessionId){
 
-
-async function handleFetchSession(sessionId){
-  await sessionDetails.gettingData(sessionId)
-  setSelectedSessionId(sessionId)
-}
-
-console.log(sessions.msg)
-
+    await sessionDetails.gettingData(sessionId)
+    setSelectedSessionId(sessionId)
+  }
+  
+ async function handleFetch(cmd){
+  let chosenPage ;
+    if (cmd === "inc") {
+      chosenPage = page +1
+    }else {
+      chosenPage = page -1
+    }
+    await sessions.gettingData(chosenPage)
+    setPage(chosenPage)
+  }
+  
 return (
     <>
-     <div className="w-full flex items-start">
-        <div className="flex-3 p-6">
-        <header className="w-full flex justify-between py-4 h-[10%]">
-            <h1 className="text-2xl sm:text-2xl  font-bold tracking-tight text-gray-900 flex items-center">Subject <span className="text-[1rem]  px-3 text-gray-600">{sessionDetails?.msg?.subject}</span></h1>
-            <h1 className="text-2xl sm:text-2xl  font-bold tracking-tight text-gray-900 flex items-center">Lecture Date <span className="text-[1rem] px-3 text-gray-600"> 12/12/12</span></h1>
-        </header>
+     <div className="w-full max-h-screen flex items-start">
+        <div className="flex-3 p-3">
 
-            <section className=" py-4 grid grid-cols-3 grid-rows-2 gap-8">
+            <section className=" grid grid-cols-3  gap-4">
         <Card title="Total Students" value={sessionDetails?.msg?.total_students} />
        <Card title="Present Students" value={sessionDetails?.msg?.present_students}/>
       <Card title="Absent students" value={sessionDetails?.msg?.absent_students} />
-      <Card title="Attendance graph" value="10" className="col-start-1 col-end-3" />
+      <DonutChartComponent  
+            val1={["Present students", "Absent students"]}
+            val2={[sessionDetails?.msg?.present_students, sessionDetails?.msg?.absent_students]}
+             Bgs={[
+                    'rgba(75, 192, 192, 0.5)',
+                    'rgba(255, 99, 132, 0.5)'  
+                ]} 
+                brs={[
+                   'rgba(75, 192, 192, 1)',
+                'rgba(255, 99, 132, 1)'
+                ]}
+                className=" h-80 col-start-1 col-end-3" />
       <Card title="Teachers" value="10" />
 
             </section>
 
         </div>
 
-    <div className="p-3 h-[25rem] bg-[#f1f1f1] overflow-y-scroll" ref={sessionsRef}>
+    <div className="p-3  overflow-y-scroll" ref={sessionsRef}>
       <table className="w-full bg-white rounded-lg shadow-md border border-gray-200">
 
             <thead className="bg-gray-50 border-b border-gray-200">
@@ -101,8 +93,8 @@ return (
             
             <tbody className="divide-y divide-gray-200">
               
-                  {sessionsHistoryData && sessionsHistoryData?.map((student) => (
-                  <tr key={student.SESSION_ID} className={`${student.SESSION_ID === selectedSessionId? "bg-[#000] text-white": "hover:bg-gray-50 "} transition-colors  gap-3`}>
+                  {sessions.msg && sessions.msg?.map((student) => (
+                  <tr key={student.SESSION_ID} className={`${student.SESSION_ID === selectedSessionId? "bg-[#2563EB] text-white": "hover:bg-gray-50 "} transition-colors  gap-3`}>
                   <td className={`px-3 py-2 text-[0.75rem] ${student.SESSION_ID === selectedSessionId? "text-white": "text-gray-600"}`}>{student.SESSION_ID}</td>
                   <td className={`px-3 py-2 text-[0.75rem] ${student.SESSION_ID === selectedSessionId? "text-white": "text-gray-600"}`}>{new Date(student.SESSION_DATE).toLocaleDateString('en-GB')}</td>
                   <td className={`px-3 py-2 text-[0.75rem] ${student.SESSION_ID === selectedSessionId? "text-white": "text-gray-600"}`}>{student.SUBJECT}</td>
@@ -122,6 +114,43 @@ return (
                      )) }
             </tbody>
                         </table>
+<div className="flex justify-center items-center space-x-1 p-4">
+    
+    <button 
+    onClick={()=>handleFetch("dec")}
+    disabled={page<=0}
+    className="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-600 rounded-full 
+                   hover:bg-gray-200 transition duration-150 dark:text-gray-400 dark:hover:bg-gray-700"
+    >
+        &lt;
+    </button>
+    
+    <button 
+        className="w-8 h-8 flex items-center justify-center text-sm font-semibold text-white bg-indigo-500 rounded-full 
+        shadow-md transition duration-150 hover:bg-indigo-600"
+        >
+        {page+1}
+    </button>
+
+    <button 
+        onClick={()=>handleFetch("inc")}
+        className="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-600 rounded-full 
+        hover:bg-gray-200 transition duration-150 dark:text-gray-400 dark:hover:bg-gray-700"
+        >
+        {page+ 2}
+    </button>
+
+    {/* Next Button */}
+    <button 
+      onClick={()=>handleFetch("inc")}
+      disabled={sessions?.msg?.length !== 10}
+        className="w-8 h-8 flex items-center justify-center text-sm font-medium text-gray-600 rounded-full 
+                   hover:bg-gray-200 transition duration-150 dark:text-gray-400 dark:hover:bg-gray-700"
+    >
+        &gt;
+    </button>
+
+</div>
     </div>
  </div>
  </>
