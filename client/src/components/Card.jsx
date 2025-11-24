@@ -4,7 +4,7 @@ export default function Card({ title, value,  className }) {
       {/* Left section */}
       <div>
         <h3 className="text-sm font-bold text-gray-500">{title}</h3>
-        <p className="mt-2 text-3xl font-bold text-indigo-600">{value ?? "No data"}</p>
+        <p className="">{value ?? "No data"}</p>
         
       </div>
 

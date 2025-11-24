@@ -1,7 +1,7 @@
 import { useCallback, useState } from "react"
-import LoginForm from "../components/LoginForm"
-import { PasswordField, RollNoField, SubmitBtn } from "../components/inputFields"
-import { studentLogin } from "../../apis/student_api"
+import LoginForm from "../../components/LoginForm"
+import { PasswordField, RollNoField, SubmitBtn } from "../../components/inputFields"
+import { studentLogin } from "../../../apis/student_api"
 
 export function LoginPage(){
   const [data, setData] = useState({

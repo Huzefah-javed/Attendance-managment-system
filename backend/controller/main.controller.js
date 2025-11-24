@@ -6,15 +6,13 @@ import { assignSessionCookie } from "../jwt/cookie.session.js";
 
 export async function studentLogin(req, res){
     const {rollNo, password} = req.body;
-    console.log(rollNo, password)
     try {
     const isPresent = await loginVerificationAsStudent({rollNo, password})
-    console.log(isPresent)
     if(isPresent.length == 1){
             
             const {ID, STUDENT_NAME, STUDENT_ROLLNO, ROLE} = isPresent[0];
             await loginStorageSession(ID, ROLE);
-            assignJWTCookie({ID, STUDENT_NAME, STUDENT_ROLLNO}, res);
+            assignJWTCookie({ID, STUDENT_NAME, STUDENT_ROLLNO, ROLE}, res);
             assignSessionCookie(ID, res);
             res.json({msg:"login successful"})
         }else{

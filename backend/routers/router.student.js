@@ -5,6 +5,6 @@ import { checkingAttendance, markingAttendance } from "../controller/student.con
 const studentRouter = Router()
 
 studentRouter.post("/make-attendance" , markingAttendance)
-studentRouter.post("/check-attendance" , checkingAttendance)
+studentRouter.get("/check-attendance" , checkingAttendance)
 
 export default studentRouter;

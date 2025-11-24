@@ -61,6 +61,43 @@ return (
         <Card title="Total Students" value={sessionDetails?.msg?.total_students} />
        <Card title="Present Students" value={sessionDetails?.msg?.present_students}/>
       <Card title="Absent students" value={sessionDetails?.msg?.absent_students} />
+      <Card title="Students Detail" 
+      value={
+            ( 
+              //  <div className="hidden w-full md:block overflow-x-auto">
+          <table className="w-full flex flex-col justify-between bg-white rounded-lg shadow-md border border-gray-200">
+            <thead className="bg-gray-50 border-b border-gray-200">
+              <tr>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Student</th>
+                <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Roll Number</th>
+                <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">Action</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200">
+              {sessionDetails.msg && sessionDetails.msg.student_data.map((student) => (
+                <tr key={student.id} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-3 py-2">
+                    <div className="flex items-center gap-2">
+              
+                      <span className="font-semibold text-gray-900 text-[0.75rem]">{student.STUDENT_NAME}</span>
+                    </div>
+                  </td>
+                  <td className="px-3 py-2 text-gray-600">{student.STUDENT_ROLLNO}</td>
+                  <td className="px-3 py-2">
+                    <div className="flex gap-2 justify-center">
+                       <span className={`inline-flex items-center rounded-full  px-2 py-1 text-xs sm:text-sm font-medium ${student.status === "absent"?'bg-red-100 text-red-700 ring-1 ring-red-300': 'bg-green-100 text-green-700 ring-1 ring-green-300'} w-fit`}>
+        {student.status === "absent"? "Absent": "Present"}
+      </span>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+      // /  </div>
+      )
+      }
+       className="col-start-1 col-end-3 h-80  flex justify-center items-start overflow-scroll"/>
       <DonutChartComponent  
             val1={["Present students", "Absent students"]}
             val2={[sessionDetails?.msg?.present_students, sessionDetails?.msg?.absent_students]}
@@ -72,8 +109,7 @@ return (
                    'rgba(75, 192, 192, 1)',
                 'rgba(255, 99, 132, 1)'
                 ]}
-                className=" h-80 col-start-1 col-end-3" />
-      <Card title="Teachers" value="10" />
+                className=" h-80" />
 
             </section>
 
