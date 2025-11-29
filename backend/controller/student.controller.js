@@ -1,4 +1,4 @@
-import { getAttendance, setAttendance } from "../db/queries.student.js"
+import { getAttendance, getAttendanceHistory, setAttendance } from "../db/queries.student.js"
 
 export async function markingAttendance (req, res, next){
     if(req.user.Role === "ADMIN") next(401, "please login as student to access this route");
@@ -25,7 +25,20 @@ export async function checkingAttendance(req, res, next){
         const student_id = req.user. ID  
         const data = await getAttendance(student_id)
        if (data.status === 200) {
-           res.json({data})
+           res.json(data)
+         }else{
+            next(data)
+         }
+}
+
+export async function attendanceHistory(req, res, next){
+    
+    if(req.user.Role === "ADMIN") next(401, "please login as student to access this route");
+        const { subject } = req.body 
+        const student_id = req.user. ID 
+        const data = await getAttendanceHistory(student_id, subject)
+       if (data.status === 200) {
+           res.json(data)
          }else{
             next(data)
          }

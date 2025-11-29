@@ -25,12 +25,24 @@ export async function  setAttendance({ sessionID,  status, student_id}){
 
 
 export async function getAttendance(student_id){
-    let result = {status, msg};
+    let result = {status: 0, msg: null};
     try {
-      const [data] = await pool.query("select sessions.SUBJECT,SESSION_DATE,status,IS_ATTENDANCE_MARKED from attendance_table inner join sessions on sessions.SESSION_ID = attendance_table.session_id where SESSION_DATE = curdate() && attendance_table.student_id = ?", [student_id, subject, skip])
-      result.status = 200;  
-      result.msg = data;  
-      return
+      const [data] = await pool.query("select sessions.SUBJECT,SESSION_DATE,status,IS_ATTENDANCE_MARKED from attendance_table inner join sessions on sessions.SESSION_ID = attendance_table.session_id where SESSION_DATE = curdate() && attendance_table.student_id = ?", [student_id])    
+      return result ={status : 200, msg :data}
+    } catch (error) {
+        console.log(error)
+        const status = 500
+        const msg = "something went wrong during getting data"
+        result = {status, msg}
+        return result
+    }
+}
+
+export async function getAttendanceHistory(student_id, subject){
+    let result = {status: 0, msg: null};
+    try {
+      const [data] = await pool.query("select  se.SESSION_DATE, se.START_DATE, se.END_DATE, att.status from attendance_table as att left join sessions as se on se.SESSION_ID = att.session_id where se.IS_ATTENDANCE_MARKED = true And att.student_id = ? And se.SUBJECT = ?", [student_id, subject])    
+      return result ={status : 200, msg :data}
     } catch (error) {
         console.log(error)
         const status = 500
