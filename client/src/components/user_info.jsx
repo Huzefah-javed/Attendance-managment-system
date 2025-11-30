@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 function UserInfo(){
 
   const authData = useSelector(state=> state.authInfo)
-
+  
 
     return(
       <div className="w-full h-fit p-4 flex justify-end bg-blue-50">

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-export default function Sidebar() {
+export default function Sidebar({menu}) {
   const [open, setOpen] = useState(false);
 
   const toggle = () => setOpen((v) => !v);
@@ -55,19 +56,21 @@ export default function Sidebar() {
             <span className="font-semibold tracking-tight">Student Attendance system</span>
           </div>
 
-          <nav className="flex-1 px-3 py-4 space-y-1 text-sm">
-            <button
-              onClick={close}
-              className="w-full text-left rounded-lg px-3 py-2 hover:bg-black/10 transition"
+          <nav className="flex-1 flex flex-col px-3 py-4 space-y-1 text-sm">
+
+          {
+          menu.map((m)=>(
+
+             <Link
+            to={`/teacher/${m}`}
+            onClick={close}
+            className="w-full text-left rounded-lg px-3 py-2 hover:bg-black/10 transition"
             >
-              Mark Attendance
-            </button>
-            <button
-              onClick={close}
-              className="w-full text-left rounded-lg px-3 py-2 hover:bg-black/10 transition"
-            >
-              check Attendance history
-            </button>
+              {m}
+            </Link>
+          ))
+            }
+
           </nav>
 
           <div className="mt-auto border-t border-border/60 p-4">

@@ -18,7 +18,7 @@ function App (){
       if (authData.role === "ADMIN") {
    routes =  {
     path: "/teacher",
-    element: <Structure/>,
+    element: <Structure sideMenu={["lectureDetails", "markAttendance"]} />,
       children:[
         {
           path: "/teacher/lecturesDetails",
@@ -37,7 +37,7 @@ function App (){
       }else{
     routes =  {
     path: "/student",
-    element: <Structure/>,
+    element: <Structure sideMenu={["todaysLectureAttendance", "attendanceDetail"]}/>,
       children:[
         {
           path: "/student/todaysLectureAttendance",

@@ -44,3 +44,16 @@ export async function studentLogin(req, res){
         console.log(error)   
         }
  }
+
+ export async function userInfoRouter(req, res){
+    try {
+        const name = req.user.STUDENT_NAME  || req.user.NAME
+        const role = req.user.ROLE || ""
+        const subject = req.user.SUBJECT || ""
+
+        res.json({name, role, subject})
+    } catch (error) {
+        console.log(error)   
+        }
+ }
+
