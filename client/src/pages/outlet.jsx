@@ -9,20 +9,6 @@ import { addAuthData } from "../store";
 
 export function Structure ({sideMenu}){
 
-    const authData = useSelector(state => state.authInfo)
-    const dispatch = useDispatch()
-
-    
-    useEffect(()=>{
-        if (!authData.name || !authData.role) {
-            const UserInfo = async ()=>{
-                    const data = await getAuthData()
-                    dispatch(addAuthData(data))
-                }
-                UserInfo()
-            }
-    },[])
-
     return <>
         <UserInfo/>
         <Sidebar menu={sideMenu} />

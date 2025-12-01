@@ -1,8 +1,13 @@
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 
 export default function Sidebar({menu}) {
   const [open, setOpen] = useState(false);
+
+  
+    const authData = useSelector(state => state.authInfo);
+    const parentRoute = authData.role === "ADMIN"? "teacher" : authData.role === "STUDENT"? "student": ""
 
   const toggle = () => setOpen((v) => !v);
   const close = () => setOpen(false);
@@ -59,10 +64,9 @@ export default function Sidebar({menu}) {
           <nav className="flex-1 flex flex-col px-3 py-4 space-y-1 text-sm">
 
           {
-          menu.map((m)=>(
-
+            menu.map((m)=>(
              <Link
-            to={`/teacher/${m}`}
+            to={`/${parentRoute}/${m}`}
             onClick={close}
             className="w-full text-left rounded-lg px-3 py-2 hover:bg-black/10 transition"
             >

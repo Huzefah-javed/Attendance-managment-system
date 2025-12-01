@@ -9,62 +9,42 @@ import { AttendanceHistory } from "./pages/student/attendanceHsitory"
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import { useSelector } from "react-redux"
 import { Structure } from "./pages/outlet"
+import { ProtectionLayer } from "./pages/protection"
 
 function App (){
   const authData = useSelector(state => state.authInfo)
-
-  function accessRoute (){
-    let routes;
-      if (authData.role === "ADMIN") {
-   routes =  {
-    path: "/teacher",
-    element: <Structure sideMenu={["lectureDetails", "markAttendance"]} />,
-      children:[
-        {
-          path: "/teacher/lecturesDetails",
-          element: <LectureDetailHistory/>
-        },
-        {
-          path: "/teacher/markAttendance",
-          element: <AdminSessions/>
-        },
-        {
-          path: "/teacher/lecturesDetails",
-          element: <LectureDetailHistory/>
-        }
-    ]
-  }
-      }else{
-    routes =  {
-    path: "/student",
-    element: <Structure sideMenu={["todaysLectureAttendance", "attendanceDetail"]}/>,
-      children:[
-        {
-          path: "/student/todaysLectureAttendance",
-          element: <CurrentStudentAttendance/>
-        },
-        {
-          path: "/student/attendanceDetail",
-          element: <AttendanceHistory/>
-        }
-    ]
-  }
-
-      }
-
-      return routes
-  }
-
+  
 const router = createBrowserRouter([
-      {
-        path: "/",
-        element: <LoginPage/>
-      },
-      {
-        path: "/teacherLogin",
-        element: <AdminLogin/>
-      },
-   accessRoute()
+    {
+    path: "/teacher",
+    element: (
+      <ProtectionLayer authRole="ADMIN">
+        <Structure sideMenu={["lecturesDetails", "markAttendance"]} />
+      </ProtectionLayer>
+    ),
+    children: [
+      { path: "/teacher/lecturesDetails", element: <LectureDetailHistory /> },
+      { path: "/teacher/markAttendance", element: <AdminSessions /> }
+    ]
+  },
+
+  {
+    path: "/student",
+    element: (
+      <ProtectionLayer authRole="STUDENT">
+        <Structure sideMenu={["todaysLectureAttendance", "attendanceDetail"]} />
+      </ProtectionLayer>
+    ),
+    children: [
+      { path: "/student/todaysLectureAttendance", element: <CurrentStudentAttendance /> },
+      { path: "/student/attendanceDetail", element: <AttendanceHistory /> }
+    ]
+  },
+
+  { path: "/", element: <LoginPage /> },
+  { path: "/teacherLogin", element: <AdminLogin /> }
+
+
 ])
 
 
