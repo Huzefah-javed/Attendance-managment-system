@@ -23,11 +23,11 @@ const router = createBrowserRouter([
       </ProtectionLayer>
     ),
     children: [
-      { path: "/teacher/lecturesDetails", element: <LectureDetailHistory /> },
-      { path: "/teacher/markAttendance", element: <AdminSessions /> }
+      { path: "/teacher/lecturesDetails", element: <LectureDetailHistory /> ,},
+      { path: "/teacher/markAttendance", element: <AdminSessions /> ,}
     ]
   },
-
+  
   {
     path: "/student",
     element: (

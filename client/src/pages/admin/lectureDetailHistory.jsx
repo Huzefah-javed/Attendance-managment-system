@@ -4,6 +4,7 @@ import Card from "../../components/Card";
 import { usePostData } from "../../hooks/data_post";
 import { useCallback } from "react";
 import { DonutChartComponent } from "../../components/donutChart";
+import Loader from "../../components/Loader";
 
 export default function LectureDetailHistory(){
 
@@ -27,7 +28,7 @@ useEffect(()=>{
   },[sessionsRef.current])
   
   if (sessions.loading || sessionDetails.loading) {
-    return <h1>Loading....</h1>
+    return <Loader/>
   }
   
   if(sessions.error || sessionDetails.error){
@@ -36,7 +37,6 @@ useEffect(()=>{
   
   
   async function handleFetchSession(sessionId){
-
     await sessionDetails.gettingData(sessionId)
     setSelectedSessionId(sessionId)
   }

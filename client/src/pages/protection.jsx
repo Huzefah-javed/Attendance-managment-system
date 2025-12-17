@@ -13,24 +13,24 @@ export function ProtectionLayer({children, authRole}){
     
     useEffect(()=>{
         if (!authData.name || !authData.role) {
+          // setLoading(true)
             const UserInfo = async ()=>{
                     const data = await getAuthData()
                     dispatch(addAuthData(data))
                     setLoading(false);
                 }
                 UserInfo()
+            }else{
+              setLoading(false)
             }
-            },[])
-
-              if (loading) {
-    return <div>Loading...</div>;
-  }
-
-if (!authData.name && authData.role !== authRole) {
-    return <Navigate to="/" replace/>
-}
-
-    return children
-
-
+            },[authData.name, authData.role])
+            
+            if (loading) {
+              return <div>Loading...</div>;
+            }
+            if (authData.name && authData.role === authRole) {
+              return children
+            } else{
+              return <Navigate to="/" replace/>
+            }
 }

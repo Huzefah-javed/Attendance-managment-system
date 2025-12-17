@@ -12,8 +12,8 @@ const [session, setSession] = useState({
   sessionHour: 0,
   sessionMin: 0,
    createdBy: "John"
-})
-const [sessionId, setSessionId]  = useState(null)
+  })
+  const [sessionId, setSessionId]  = useState(null)
   const studentsForAttendance = useFetchData(getStudentForAttendance)
 const {gettingData, loading, error, msg} = usePostData(createLecSession)
 const fetch = useFetchData(latestSessionHistory)
@@ -22,6 +22,7 @@ function handleFormSubmit(e){
   e.preventDefault()
   if (session.subjectName|| session.sessionEndTime|| session.createdBy) {
     gettingData(session);
+    fetch.gettingData()
   }
 }
 console.log(session)
@@ -140,6 +141,8 @@ function handleCloseAttendancePage(){
         </div>
       </form>
     </div>
+
+
         <div className="w-full flex justify-between">
       <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900">
         Last 10 sessions details
