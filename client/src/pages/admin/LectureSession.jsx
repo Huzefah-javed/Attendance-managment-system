@@ -4,19 +4,24 @@ import { createLecSession, getStudentForAttendance, latestSessionHistory } from 
 import { useFetchData } from "../../hooks/data_fetch"
 import { Activity } from "react"
 import StudentAttendance from "./mark_attendance"
+import dataRender from "../../hooks/DataRender"
+import Loader from "../../components/Loader"
+import { useSelector } from "react-redux"
 
 function AdminSession(){
+  const teacherData =  useSelector(state => state.authInfo);
 
 const [session, setSession] = useState({
-  subjectName: "",
+  subjectName: teacherData.subject,
   sessionHour: 0,
   sessionMin: 0,
-   createdBy: "John"
+   createdBy: teacherData.name
   })
   const [sessionId, setSessionId]  = useState(null)
   const studentsForAttendance = useFetchData(getStudentForAttendance)
 const {gettingData, loading, error, msg} = usePostData(createLecSession)
-const fetch = useFetchData(latestSessionHistory)
+const fetch = dataRender(latestSessionHistory)
+
 
 function handleFormSubmit(e){
   e.preventDefault()
@@ -28,10 +33,9 @@ function handleFormSubmit(e){
 console.log(session)
 if (loading || fetch.loading) {
   return (
-    <p>Loading....</p>
+    <Loader/>
   )
 }
-
 
 if (msg || fetch.msg) {
   console.log(msg || fetch.msg)
@@ -43,10 +47,10 @@ if (error || fetch.error) {
 function handleLoadSessions(){
   fetch.gettingData()
 }
+
 function handleStudentForAttendance(sessionId){
     studentsForAttendance.gettingData(sessionId)
     setSessionId(sessionId)
-
 }
 
 function handleCloseAttendancePage(){
@@ -54,34 +58,36 @@ function handleCloseAttendancePage(){
 }
   return (
       <div className="min-h-screen bg-gray-50 px-4 py-8 sm:py-12">
-  <div className="mx-auto w-full max-w-5xl space-y-6">
-    <div className="space-y-2">
-      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900">
-        Create Lecture Session
+  <div className=" w-full ">
+    <div className=" py-4">
+      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900">
+        Attendance Session
       </h1>
       <p className="text-sm sm:text-base text-gray-600">
         Configure a new lecture attendance session for students.
       </p>
     </div>
 
-    <div className="rounded-xl sm:rounded-2xl border border-gray-200 bg-white shadow-lg">
-      <form className="p-4 sm:p-6 lg:p-8" onSubmit={(e)=>handleFormSubmit(e)}>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+    <div className="w-full flex justify-around flex-col lg:flex-row items-stretch">
+
+    <div className="rounded-l-2xl flex-2 p-4  border border-gray-200 bg-white shadow-lg">
+       <h1 className="text-2xl h-[10%] my-4  font-extrabold tracking-tight text-gray-900">
+       Create Session
+      </h1>
+      <form className="h-[80%]  flex flex-col justify-evenly" onSubmit={(e)=>handleFormSubmit(e)}>
+        <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 sm:gap-6">
           {/* Subject */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
               Subject
             </label>
-            <select className="w-full rounded-lg border border-gray-300 bg-white px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-            onChange={(e)=>setSession((prev)=>({...prev, subjectName: e.target.value}))}>
-              {["OOP", "DLD", "Data Structures", "Database Systems"].map((s) => (
-                <option key={s} value={s}>
-                  {s}
+            <select className="w-full rounded-lg border border-gray-300 bg-white px-3 text-gray-400 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+            onChange={(e)=>setSession((prev)=>({...prev, subjectName: e.target.value}))} disabled>
+                <option value={teacherData.subject}>
+                  {teacherData.subject}
                 </option>
-              ))}
             </select>
           </div>
-
 
           {/* End Time */}
         <div className="space-y-2">
@@ -134,50 +140,43 @@ function handleCloseAttendancePage(){
         </div>
 
         {/* Submit Button */}
-        <div className="mt-6 sm:mt-8">
-          <button className="w-full sm:w-auto sm:min-w-[200px] inline-flex items-center justify-center rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all">
+        <div className="mt-6 w-full sm:mt-8">
+          <button className="w-full rounded-lg bg-blue-600 px-6 py-3 text-sm font-semibold text-white shadow-lg hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 transition-all">
             Make Session
           </button>
         </div>
       </form>
     </div>
+              <div className="flex-2 rounded-r-2xl p-4 h-full border border-gray-200 bg-white shadow-lg">
 
-
-        <div className="w-full flex justify-between">
-      <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900">
-        Last 10 sessions details
+       <h1 className="text-2xl  my-4  font-extrabold tracking-tight text-gray-900">
+        Mark attendance on sessions
       </h1>
-       <button 
-           onClick={handleLoadSessions}
-           className="px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
-              Refresh sessions history
-        </button>
-        </div>
-               <table className="w-full bg-white rounded-lg shadow-md border border-gray-200">
+               <table className="w-full bg-white shadow-md border border-gray-200">
 
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr>
-                <th className="px-3 py-2 text-left text-sm font-semibold text-gray-700">lecture Id</th>
-                <th className="px-3 py-2 text-left text-sm font-semibold text-gray-700">Date</th>
-                <th className="px-3 py-2 text-left text-sm font-semibold text-gray-700">Subject</th>
-                <th className="px-3 py-2 text-center text-sm font-semibold text-gray-700">Action</th>
+                <th className="px-1 md:px-3 md:py-0.75 py-2 text-left text-[0.75rem] md:text-sm font-semibold text-gray-700">lecture Id</th>
+                <th className="px-1 md:px-3 md:py-0.75 py-2 text-left text-[0.75rem] md:text-sm font-semibold text-gray-700">Date</th>
+                <th className="px-1 md:px-3 md:py-0.75 py-2 text-left text-[0.75rem] md:text-sm font-semibold text-gray-700">Subject</th>
+                <th className="px-1 md:px-3 md:py-0.75 py-2 text-center text-[0.75rem] md:text-sm font-semibold text-gray-700">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              {typeof(fetch.msg) != "string" && fetch.msg.map((student) => (
+              { fetch?.data?.map((student) => (
                 <tr key={student.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-3 py-2 text-gray-600">{student.SESSION_ID}</td>
-                  <td className="px-3 py-2 text-gray-600">{new Date(student.SESSION_DATE).toLocaleDateString('en-GB')}</td>
-                  <td className="px-3 py-2 text-gray-600">{student.SUBJECT}</td>
-                  <td className="px-1 py-1">
+                  <td className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm  text-gray-600">{student.SESSION_ID}</td>
+                  <td className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm text-gray-600">{new Date(student.SESSION_DATE).toLocaleDateString('en-GB')}</td>
+                  <td className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm  text-gray-600">{student.SUBJECT}</td>
+                  <td className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm ">
                     <div className="flex gap-1 justify-center">
                       {(!(student.IS_ATTENDANCE_MARKED) && new Date().toLocaleDateString() == new Date(student.SESSION_DATE).toLocaleDateString() && new Date().getTime() < new Date((new Date(student.SESSION_DATE).toLocaleDateString('en-CA') + "T"+ student.END_DATE +".000Z")).getTime() )? 
 
                       (<button 
                       onClick={()=>handleStudentForAttendance(student.SESSION_ID)}
-                      className="px-3 py-2 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+                      className="px-1 md:px-3 md:py-2 py-0.75 bg-green-500 hover:bg-green-600 text-[0.75rem] md:text-sm  text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
                         Mark Attendance
-                      </button>):(<p className="px-6 py-4 text-gray-600">No action can be performed</p>)}
+                      </button>):(<p className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm  text-gray-600">Unactionable</p>)}
                     
                     </div>
                   </td>
@@ -185,11 +184,15 @@ function handleCloseAttendancePage(){
               ))}
             </tbody>
             </table>
+              </div>
+    </div>
 
-  <div hidden={!studentsForAttendance.msg} className={`p-10 w-screen bg-[#00000042] absolute ${studentsForAttendance.msg? "top-0":"top-full"} left-0  transition-all duration-200`}>
+  <div hidden={!studentsForAttendance.msg} className={`md:p-10 p-5 w-screen h-screen bg-[#00000042] fixed ${studentsForAttendance.msg? "top-0":"top-full"} left-0  transition-all duration-200`}>
     <button
     onClick={handleCloseAttendancePage}
-    className="absolute top-15 right-13 px-6 py-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">close</button>
+    className="absolute rounded-full md:top-5 top-1 md:left-6 left-2 px-3 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold  transition-colors duration-200 shadow-md hover:shadow-lg">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+      </button>
   <StudentAttendance 
     loading={studentsForAttendance.loading}
     error={studentsForAttendance.error}

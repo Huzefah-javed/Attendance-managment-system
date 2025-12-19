@@ -86,7 +86,7 @@ export async function latestSessionsHistory(subject){
     let result = {status:0, msg:""}
     console.log(subject)
     try {
-     const [data] =  await pool.query("select SESSION_ID, SUBJECT, SESSION_DATE, END_DATE, IS_ATTENDANCE_MARKED from SESSIONS WHERE SUBJECT = ? order by session_id desc limit 10 ", [subject])
+     const [data] =  await pool.query("select SESSION_ID, SUBJECT, SESSION_DATE, END_DATE, IS_ATTENDANCE_MARKED from SESSIONS WHERE SUBJECT = ? order by session_id desc limit 5 ", [subject])
      return result= {status :200, msg: data};
     } catch (error) {
         const status = 500
