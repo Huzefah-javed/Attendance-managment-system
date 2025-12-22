@@ -25,7 +25,7 @@ export async function latestSessionHistory(){
    return response.data
 }
 
-export async function sessionHistory(...args){
+export async function sessionHistory(args){
    const response = await api.post("/admin/sessions-history", {skip: args[0]})
    return response.data
 }

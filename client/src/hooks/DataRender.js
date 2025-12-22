@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 
-export default function dataRender(fetchFn){
+export default function dataRender(fetchFn, args){
 
 const [loading,setLoading] = useState(false)
 const [data,setData] = useState([])
 const [err,setErr] = useState("")
 
-useEffect(()=>{
-
-const dataFetch = async()=>{
+const dataFetch = useCallback(async(argument = args)=>{
     setLoading(true)
-    try {
-        const res = await fetchFn();
+try {
+    const res = (argument.length > 0)? await fetchFn(argument) : await fetchFn();
+    
+    console.log("res ", res)
         if (res.status == 200||201) {
             setData(res.msg)
         }
@@ -21,12 +21,13 @@ const dataFetch = async()=>{
     }finally{
         setLoading(false)
     }
-}
-
-    dataFetch()
 },[])
 
 
+useEffect(()=>{
+    dataFetch()
+},[dataFetch])
 
-return {data, loading, err}
+
+return {setData, data, loading, err, refetch: dataFetch}
 }

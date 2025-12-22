@@ -6,9 +6,9 @@ function UserInfo(){
   
 
     return(
-      <div className="w-full h-fit p-4 flex justify-start bg-blue-50">
-  <div className="min-w-0 flex flex-col md:gap-3">
-    <h1 className="text-lg text-left sm:text-xl md:text-2xl font-bold tracking-tight truncate uppercase">
+      <div className="w-full h-fit p-2 flex justify-start bg-blue-50">
+  <div className="min-w-0 flex flex-col ">
+    <h1 className="text-lg text-left sm:text-xl md:text-2xl font-bold p-0 m-0 tracking-tight truncate uppercase">
       {authData.name}
     </h1>
 

@@ -7,6 +7,7 @@ import StudentAttendance from "./mark_attendance"
 import dataRender from "../../hooks/DataRender"
 import Loader from "../../components/Loader"
 import { useSelector } from "react-redux"
+import {motion, AnimatePresence} from "motion/react"
 
 function AdminSession(){
   const teacherData =  useSelector(state => state.authInfo);
@@ -20,14 +21,14 @@ const [session, setSession] = useState({
   const [sessionId, setSessionId]  = useState(null)
   const studentsForAttendance = useFetchData(getStudentForAttendance)
 const {gettingData, loading, error, msg} = usePostData(createLecSession)
-const fetch = dataRender(latestSessionHistory)
+let fetch = dataRender(latestSessionHistory)
 
 
-function handleFormSubmit(e){
+async function handleFormSubmit(e){
   e.preventDefault()
   if (session.subjectName|| session.sessionEndTime|| session.createdBy) {
-    gettingData(session);
-    fetch.gettingData()
+    await gettingData(session);
+    fetch.refetch();
   }
 }
 console.log(session)
@@ -44,9 +45,6 @@ if (error || fetch.error) {
   console.log(error || fetch.error)
 }
 
-function handleLoadSessions(){
-  fetch.gettingData()
-}
 
 function handleStudentForAttendance(sessionId){
     studentsForAttendance.gettingData(sessionId)
@@ -60,9 +58,12 @@ function handleCloseAttendancePage(){
       <div className="min-h-screen bg-gray-50 px-4 py-8 sm:py-12">
   <div className=" w-full ">
     <div className=" py-4">
-      <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900">
+      <motion.h1 
+      initial={{ opacity: 0, y: 50 }}   
+      animate={{ opacity: 1, y: 0 }}
+      className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900">
         Attendance Session
-      </h1>
+      </motion.h1>
       <p className="text-sm sm:text-base text-gray-600">
         Configure a new lecture attendance session for students.
       </p>
@@ -70,19 +71,25 @@ function handleCloseAttendancePage(){
 
     <div className="w-full flex justify-around flex-col lg:flex-row items-stretch">
 
-    <div className="rounded-l-2xl flex-2 p-4  border border-gray-200 bg-white shadow-lg">
-       <h1 className="text-2xl h-[10%] my-4  font-extrabold tracking-tight text-gray-900">
-       Create Session
-      </h1>
-      <form className="h-[80%]  flex flex-col justify-evenly" onSubmit={(e)=>handleFormSubmit(e)}>
-        <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 sm:gap-6">
+    <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="rounded-l-2xl flex-2 p-4  border border-gray-200 bg-white shadow-lg">
+         <h1 className="text-2xl h-[10%] my-4  font-extrabold tracking-tight text-gray-900">
+          Create Session
+        </h1>
+      <form 
+          className="h-[80%]  flex flex-col justify-evenly" onSubmit={(e)=>handleFormSubmit(e)}>
+          <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 sm:gap-6">
           {/* Subject */}
           <div className="space-y-2">
             <label className="block text-sm font-medium text-gray-700">
               Subject
             </label>
-            <select className="w-full rounded-lg border border-gray-300 bg-white px-3 text-gray-400 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-            onChange={(e)=>setSession((prev)=>({...prev, subjectName: e.target.value}))} disabled>
+            <select
+              className="w-full rounded-lg border border-gray-300 bg-white px-3 text-gray-400 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
+              onChange={(e)=>setSession((prev)=>({...prev, subjectName: e.target.value}))} disabled>
                 <option value={teacherData.subject}>
                   {teacherData.subject}
                 </option>
@@ -146,8 +153,12 @@ function handleCloseAttendancePage(){
           </button>
         </div>
       </form>
-    </div>
-              <div className="flex-2 rounded-r-2xl p-4 h-full border border-gray-200 bg-white shadow-lg">
+    </motion.div>
+              <motion.div
+                 initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
+                className="flex-2  rounded-r-2xl p-4 min-h-full border border-gray-200 bg-white shadow-lg">
 
        <h1 className="text-2xl  my-4  font-extrabold tracking-tight text-gray-900">
         Mark attendance on sessions
@@ -184,23 +195,53 @@ function handleCloseAttendancePage(){
               ))}
             </tbody>
             </table>
-              </div>
+              </motion.div>
     </div>
+              <AnimatePresence>
+  {studentsForAttendance.msg && (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}   
+      animate={{ opacity: 1, y: 0 }}     
+      exit={{ opacity: 0, y: 50 }} 
+      className="md:p-10 p-5 w-screen h-screen bg-[#00000042] fixed top-0 left-0"
+    >
+      <div className="p-4 bg-white rounded-t-3xl relative">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-gray-900">
+          Attendance session id {sessionId}
+        </h1>
+        <button
+          onClick={handleCloseAttendancePage}
+          className="absolute rounded-full md:-top-4 -top-4 md:-left-4 -left-4 px-3 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold transition-colors duration-200 shadow-md hover:shadow-lg"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="h-5 w-5"
+          >
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
+        </button>
+      </div>
 
-  <div hidden={!studentsForAttendance.msg} className={`md:p-10 p-5 w-screen h-screen bg-[#00000042] fixed ${studentsForAttendance.msg? "top-0":"top-full"} left-0  transition-all duration-200`}>
-    <button
-    onClick={handleCloseAttendancePage}
-    className="absolute rounded-full md:top-5 top-1 md:left-6 left-2 px-3 py-3 bg-blue-500 hover:bg-blue-600 text-white font-semibold  transition-colors duration-200 shadow-md hover:shadow-lg">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-5 w-5"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
-      </button>
-  <StudentAttendance 
-    loading={studentsForAttendance.loading}
-    error={studentsForAttendance.error}
-    msg={studentsForAttendance.msg}
-    sessionId={sessionId}
-    />
-    </div>
-  </div>
+      <StudentAttendance
+        loading={studentsForAttendance.loading}
+        error={studentsForAttendance.error}
+        msg={studentsForAttendance.msg}
+        setMsg={studentsForAttendance.setMsg} 
+        setSession={fetch.setData}
+        sessionId={sessionId}
+      />
+    </motion.div>
+  )}
+</AnimatePresence>
+
+</div>
   
 </div>
 
