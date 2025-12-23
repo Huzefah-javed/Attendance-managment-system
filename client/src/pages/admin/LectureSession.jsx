@@ -21,7 +21,7 @@ const [session, setSession] = useState({
   const [sessionId, setSessionId]  = useState(null)
   const studentsForAttendance = useFetchData(getStudentForAttendance)
 const {gettingData, loading, error, msg} = usePostData(createLecSession)
-let fetch = dataRender(latestSessionHistory)
+let fetch = dataRender(latestSessionHistory, [])
 
 
 async function handleFormSubmit(e){

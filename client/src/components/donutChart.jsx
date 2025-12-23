@@ -4,9 +4,10 @@ import {
     ArcElement, 
     Tooltip, 
     Legend ,
+    Title
 } from 'chart.js';    
-    export function DonutChartComponent({val1, val2, Bgs,  brs,  className}){
-    ChartJS.register(ArcElement, Tooltip, Legend);
+    export function DonutChartComponent({val1, val2, Bgs,  brs,  className, title}){
+    ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
             const data = {
       labels: val1,
@@ -37,8 +38,11 @@ import {
             }
         },
           title: {
-            display: true,
-            text: 'My Bar Chart',
+            display: true, 
+            text: title.title, 
+          color: title.color, 
+          position: 'top', 
+          align: 'start',
           },
         },
       };
