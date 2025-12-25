@@ -6,6 +6,7 @@ import { useCallback } from "react";
 import { DonutChartComponent } from "../../components/donutChart";
 import Loader from "../../components/Loader";
 import dataRender from "../../hooks/DataRender";
+import {motion} from "motion/react"
 
 export default function LectureDetailHistory(){
 
@@ -49,12 +50,12 @@ const sessionsRef = useRef(null);
 return (
     <>
        <div className="p-4">
-      <h1 
+      <motion.h1 
       initial={{ opacity: 0, y: 50 }}   
       animate={{ opacity: 1, y: 0 }}
       className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-gray-900">
         Attendance History
-      </h1>
+      </motion.h1>
       <p className="text-sm sm:text-base text-gray-600">
         Check each and every session detailed history
       </p>
@@ -69,7 +70,7 @@ return (
             className={'col-start-1 col-end-3 md:col-auto '}
             childClasses={'text-blue-500 md:text-4xl text-2xl'} 
             headerClasses={'md:text-sm text-xs'}/>
-       <Card 
+       <Card
           title="Present Students" 
           value={sessionDetails?.msg?.present_students} 
           className={''}
@@ -82,7 +83,11 @@ return (
           childClasses={'text-red-500 md:text-4xl text-2xl'} 
           headerClasses={'md:text-sm text-xs'}/>
     
-               <div className="w-full  overflow-y-scroll p-4 col-start-1 col-end-3 md:row-start-2 row-start-5 md:row-end-4 row-end-7 min-h-72 max-h-72">
+               <motion.div
+               initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
+          transition={{ duration: 0.25, ease: "easeOut" }} 
+               className="w-full  overflow-y-scroll p-4 col-start-1 col-end-3 md:row-start-2 row-start-5 md:row-end-4 row-end-7 min-h-72 max-h-72">
           <table className="w-full flex flex-col justify-between bg-white rounded-lg shadow-md border border-gray-200">
             <thead className="bg-gray-50 border-b border-gray-200">
               <tr className="grid grid-cols-3">
@@ -112,7 +117,7 @@ return (
               ))}
               </tbody>
           </table>
-     </div>
+     </motion.div>
     
       <DonutChartComponent  
 

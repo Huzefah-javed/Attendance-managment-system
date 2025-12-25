@@ -5,7 +5,8 @@ import {
     Tooltip, 
     Legend ,
     Title
-} from 'chart.js';    
+} from 'chart.js';
+import {motion} from "motion/react"    
     export function DonutChartComponent({val1, val2, Bgs,  brs,  className, title}){
     ChartJS.register(ArcElement, Tooltip, Legend, Title);
 
@@ -48,7 +49,11 @@ import {
       };
 
         return(
-        <div className={`flex items-center justify-between rounded-2xl  shadow-md  shadow-gray-200 dark:shadow-gray-500 p-5 transition hover:shadow-lg ${className}`}>
+        <motion.div
+          initial={{ opacity: 0, scaleX: 0 }}
+          animate={{ opacity: 1, scaleX: 1 }}
+          transition={{ duration: 0.25, ease: "easeOut" }} 
+        className={`flex items-center justify-between rounded-2xl  shadow-md  shadow-gray-200 dark:shadow-gray-500 p-5 transition hover:shadow-lg ${className}`}>
     
                 <Pie
                 className=""
@@ -57,5 +62,5 @@ import {
                 />
                     
 
-        </div>)
+        </motion.div>)
 }

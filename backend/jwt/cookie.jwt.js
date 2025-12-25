@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import { getSessionalData } from "../db/login.session.js";
+import { getAdminDataById, getStudentDataById } from "../db/queries.main.js";
 
 export  function assignJWTCookie(data, res){
     const token = jwt.sign(data, process.env.JWT_SECRET)
@@ -21,36 +22,29 @@ export async function cookieVerification(req, res, next){
                 token = jwt.verify(jwtCookie, process.env.JWT_SECRET)
                 req.user = token;
                 console.log(req.user)
-               return next()
+                return next()
             } catch (error) {
                 console.log(error)
                 return res.status(401).json({ msg: "Authentication failed" });
             }
         }else if (!jwtCookie && sessionalCookie) {
-
-            const userData = await getSessionalData(sessionalCookie);
-
-            if (!userData) {
-                return res.status(401).json({ msg: "Session expired. Please log in again." });
+            
+            const {ID, ROLE, USER_ID} = await getSessionalData(sessionalCookie);
+                console.log("userID is: ",USER_ID)
+                if (!ID && !ROLE && !USER_ID) {
+                    return res.status(401).json({ msg: "Session expired. Please log in again." });
                 }
-
-                console.log(userData)
-                const {
-                    STUDENT_ID,
-                    STUDENT_NAME,
-                    STUDENT_ROLLNO
-                } = userData
-                 assignJWTCookie({
-                    ID: STUDENT_ID,
-                    STUDENT_NAME,
-                    STUDENT_ROLLNO
-                }, res)
-                req.user = {
-                    ID: STUDENT_ID,
-                    STUDENT_NAME,
-                    STUDENT_ROLLNO
-                }               
-              return  next()
+                if (ROLE == "ADMIN") {
+                    const { ID, NAME, SUBJECT, EMAIL, ROLE }= await getAdminDataById(USER_ID)
+                    console.log("reaction is: ",{ ID, NAME, SUBJECT, EMAIL, ROLE })
+                    assignJWTCookie({ ID, NAME, SUBJECT, EMAIL, ROLE }, res)
+                    req.user = { ID, NAME, SUBJECT, EMAIL, ROLE }               
+                }else{
+                    const {ID, NAME, STUDENT_ROLLNO, EMAIL, ROLE}= await getStudentDataById(USER_ID)
+                    assignJWTCookie({ID, NAME, STUDENT_ROLLNO, EMAIL, ROLE}, res)
+                    req.user = {ID, NAME, STUDENT_ROLLNO, EMAIL, ROLE}              
+                }
+            return  next()
         } else {
             return res.status(401).json({ msg: "Authentication required" });
         }

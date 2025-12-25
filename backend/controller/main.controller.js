@@ -10,9 +10,9 @@ export async function studentLogin(req, res){
     const isPresent = await loginVerificationAsStudent({rollNo, password})
     if(isPresent.length == 1){
             
-            const {ID, STUDENT_NAME, STUDENT_ROLLNO, ROLE} = isPresent[0];
+            const {ID, NAME, STUDENT_ROLLNO, EMAIL, ROLE} = isPresent[0];
             await loginStorageSession(ID, ROLE);
-            assignJWTCookie({ID, STUDENT_NAME, STUDENT_ROLLNO, ROLE}, res);
+            assignJWTCookie({ID, NAME, STUDENT_ROLLNO, EMAIL, ROLE}, res);
             assignSessionCookie(ID, res);
             res.json({msg: {name: STUDENT_NAME, role: ROLE}})
         }else{
@@ -47,7 +47,7 @@ export async function studentLogin(req, res){
 
  export async function userInfoRouter(req, res){
     try {
-        const name = req.user.STUDENT_NAME  || req.user.NAME
+        const name = req.user.NAME || ""
         const role = req.user.ROLE || ""
         const subject = req.user.SUBJECT || ""
 
