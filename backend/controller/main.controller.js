@@ -14,7 +14,7 @@ export async function studentLogin(req, res){
             await loginStorageSession(ID, ROLE);
             assignJWTCookie({ID, NAME, STUDENT_ROLLNO, EMAIL, ROLE}, res);
             assignSessionCookie(ID, res);
-            res.json({msg: {name: STUDENT_NAME, role: ROLE}})
+            res.json({msg: {name: NAME, role: ROLE}})
         }else{
             res.json({msg : "student not found"})
         }
