@@ -2,9 +2,10 @@ import express from "express"
 import { configDotenv } from "dotenv";
 import mainRouter from "./routers/router.main.js"
 import cookieParser from "cookie-parser";
-import { cookieVerification } from "./jwt/cookie.jwt.js";
+// import { cookieVerification } from "./jwt/cookie.jwt.js";
 import { errorMiddleware } from "./middleware/middleware.error.js";
 import cors from "cors"
+import mongoose from "mongoose";
 
 const app =express()
 
@@ -24,6 +25,14 @@ app.use(mainRouter)
 app.use(errorMiddleware)
 
 
-app.listen(3000, ()=>{
-    console.log("app listen at the 3000")
+try {
+   await mongoose.connect(process.env.MONGOURI)
+    console.log("db connect")
+    
+app.listen(process.env.PORT, ()=>{
+    console.log("port ready on 5000")
 })
+} catch (error) {
+    console.log(error)
+    console.log("error occurred in the db connection")
+}

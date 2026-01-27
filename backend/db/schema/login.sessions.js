@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
-const AutoIncrement = require('mongoose-sequence')(mongoose)
+import inc from 'mongoose-sequence'
+
+const AutoIncrement = inc(mongoose)
 
 const  loginSessionsSchema =  new mongoose.Schema({
     id:{
@@ -7,17 +9,30 @@ const  loginSessionsSchema =  new mongoose.Schema({
         unique: true
     },
     user_id: {
-        types: Number,
+        type: Number,
         required: true,
     },
     role:{
         type: String,
         enum: ["super_admin", "department_admin", "student", "teacher"],
         required: true,
+    },
+    createdAt:{
+        type: Date,
+        default: Date.now
     }
     
 })
 
-loginSessionsSchema.plugin(AutoIncrement, {inc_field: "id"})
+try {
+    loginSessionsSchema.plugin(AutoIncrement, { 
+        inc_field: "id", 
+        id: "login_session_counter" // Unique string for this specific counter
+    });
+} catch (e) {
+    if (!e.message.includes("Counter already defined")) {
+        throw e;
+    }
+}
 
-export const attendanceData = mongoose.Model("login_session", loginSessionsSchema)
+export const loginSession = mongoose.models.login_session || mongoose.model("login_session", loginSessionsSchema);
