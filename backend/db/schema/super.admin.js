@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
-import inc from 'mongoose-sequence'
 
-const AutoIncrement = inc(mongoose)
 
 const  superAdminSchema =  new mongoose.Schema({
     id:{
@@ -28,14 +26,6 @@ const  superAdminSchema =  new mongoose.Schema({
         default: 'super_admin'
     }
 })
-
-try {
-    superAdminSchema.plugin(AutoIncrement, { inc_field: "id" });
-} catch (e) {
-    if (!e.message.includes("Counter already defined")) {
-        throw e;
-    }
-}
 
 // 3. Prevent "OverwriteModelError" if the file is re-imported
 export const superAdmin = mongoose.models.super_admin || mongoose.model("super_admin", superAdminSchema);

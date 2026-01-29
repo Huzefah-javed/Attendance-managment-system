@@ -1,4 +1,5 @@
 import { loginSession } from "../schema/login.sessions.js";
+import { superAdmin } from "../schema/super.admin.js";
 
 export async function loginStorageSession(id, role) {
     let result;
@@ -11,3 +12,17 @@ export async function loginStorageSession(id, role) {
             result = {success: false}
         }
 }
+
+export async function getSuperAdminWithSession({id, role}) {
+    let result;
+        try {
+        const data =   await superAdmin.findOne({id:Number(id), role})
+        if(data === null) throw new Error("This user is not found")
+           result = {status: 200,success: true, data}
+            return result   
+        } catch (error) {
+            console.log(error)
+            result = {status:401, success: false, msg:error.message}
+        }
+}
+

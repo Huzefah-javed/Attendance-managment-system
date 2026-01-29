@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
-import inc from 'mongoose-sequence'
+import { counter } from "./counter.js";
 
-const AutoIncrement = inc(mongoose)
 
 const  loginSessionsSchema =  new mongoose.Schema({
     id:{
@@ -24,15 +23,15 @@ const  loginSessionsSchema =  new mongoose.Schema({
     
 })
 
-try {
-    loginSessionsSchema.plugin(AutoIncrement, { 
-        inc_field: "id", 
-        id: "login_session_counter" // Unique string for this specific counter
-    });
-} catch (e) {
-    if (!e.message.includes("Counter already defined")) {
-        throw e;
+loginSessionsSchema.pre('save', async function () {
+    if (this.isNew) {
+           const data =  await counter.findOneAndUpdate(
+                { collectionId: 'login_sessions' },
+                { $inc: { seq: 1 } },
+                { new: true, upsert: true }
+            );
+            this.id = data.seq
     }
-}
+})
 
 export const loginSession = mongoose.models.login_session || mongoose.model("login_session", loginSessionsSchema);

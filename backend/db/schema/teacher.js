@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 
-const  departmentAdminSchema =  new mongoose.Schema({
+
+const  teacherSchema =  new mongoose.Schema({
     id:{
         type: Number,
         unique: true
@@ -22,14 +23,18 @@ const  departmentAdminSchema =  new mongoose.Schema({
     },
     role:{
         type: String,
-        default: 'department_admin'
+        default: 'teacher'
+    },
+    departmentId:{
+        type: Number,
+        required: true
     }
 })
 
-departmentAdminSchema.pre('save', async function () {
+teacherSchema.pre('save', async function () {
     if (this.isNew) {
            const data =  await counter.findOneAndUpdate(
-                { collectionId: 'students' },
+                { collectionId: 'teachers' },
                 { $inc: { seq: 1 } },
                 { new: true, upsert: true }
             );
@@ -37,4 +42,4 @@ departmentAdminSchema.pre('save', async function () {
     }
 })
 
-export const departmentAdmin = mongoose.models.department_admin || mongoose.model("department_admin",departmentAdminSchema)
+export const teacher = mongoose.models.teacher || mongoose.model("teacher", teacherSchema);

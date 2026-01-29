@@ -4,10 +4,14 @@ import { assignJWTCookie } from "../jwt/cookie.jwt.js";
 import { assignSessionCookie } from "../jwt/cookie.session.js";
 
 import { loginStorageSession } from "../db/model/login.sessions.js";
-import { loginVerificationAsSuperAdmin } from "../db/model/main.model.js";
-import { errorMiddleware } from "../middleware/middleware.error.js";
+import { loginVerificationAsDepartmentalAdmin, loginVerificationAsSuperAdmin, loginVerificationAsTeacher } from "../db/model/main.model.js";
 
-
+async function login({ id, name, email, role, status }, res) {
+            await loginStorageSession(id, role);
+            assignJWTCookie({ id, name, email, role }, res);
+            assignSessionCookie({id, role}, res);
+            res.json({status, msg: "Login successfully done"})
+}
 // export async function studentLogin(req, res){
 //     const {rollNo, password} = req.body;
 //     try {
@@ -70,11 +74,48 @@ export async function superAdminLogin(req, res, next) {
 
     if(response.success){    
             const { id, name, email, role } = response.data;
-            await loginStorageSession(id, role);
-            assignJWTCookie({ id, name, email, role }, res);
-            assignSessionCookie({id, role}, res);
-            res.json({status:200, msg: "Login successfully done"})
+            login({ id, name, email, role, status:response.status }, res)
         }else{  
-            errorMiddleware({status:500, msg:res.msg}, req, res, next)   
+            next({status:500, msg:res.msg})   
+        }
+}
+
+export async function departmentAdminLogin(req, res, next) {
+    const {email, password} = req.body;
+      // we have to validate here when using ZOD
+    console.log({email, password})
+    const response = await loginVerificationAsDepartmentalAdmin({email,password})
+    if(response.success){    
+            const { id, name, email, role } = response.data;
+             login({ id, name, email, role, status:response.status }, res)
+        }else{  
+            next({status:500, msg:res.msg})   
+        }
+}
+
+export async function teacherLogin(req, res, next) {
+    const {email, password} = req.body;
+      // we have to validate here when using ZOD
+    console.log({email, password})
+    const response = await loginVerificationAsTeacher({email,password})
+    if(response.success){    
+            const { id, name, email, role } = response.data;
+             login({ id, name, email, role, status:response.status }, res)
+        }else{  
+            next({status:400, msg:response.msg})   
+        }
+}
+
+export async function studentLogin(req, res, next) {
+    const {email, password} = req.body;
+      // we have to validate here when using ZOD
+    console.log({email, password})
+    const response = await loginVerificationAsTeacher({email,password})
+    console.log("response: ", response)
+    if(response.success){    
+            const { id, name, email, role } = response.data;
+             login({ id, name, email, role }, res)
+        }else{  
+            next({status:500, msg:res.msg})   
         }
 }

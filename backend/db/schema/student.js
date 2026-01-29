@@ -1,8 +1,7 @@
-import mongoose from "mongoose";
-const AutoIncrement = require('mongoose-sequence')(mongoose)
+import {Schema, model, models} from "mongoose";
 
-const  studentSchema =  new mongoose.Schema({
-    userId:{
+const  studentSchema =  new Schema({
+    id:{
         type: Number,
         unique: true
     },
@@ -36,6 +35,15 @@ const  studentSchema =  new mongoose.Schema({
     }
 })
 
-studentSchema.plugin(AutoIncrement, {inc_field: "userId"})
+studentSchema.pre('save', async function () {
+    if (this.isNew) {
+           const data =  await counter.findOneAndUpdate(
+                { collectionId: 'students' },
+                { $inc: { seq: 1 } },
+                { new: true, upsert: true }
+            );
+            this.id = data.seq
+    }
+})
 
-export const students = mongoose.Model("student",studentSchema)
+export const students = models.student || model("student",studentSchema)
