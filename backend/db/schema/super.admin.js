@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { counter } from "./counter.js";
 
 
 const  superAdminSchema =  new mongoose.Schema({
@@ -27,5 +28,15 @@ const  superAdminSchema =  new mongoose.Schema({
     }
 })
 
-// 3. Prevent "OverwriteModelError" if the file is re-imported
+superAdminSchema.pre("save", async function (){
+    if (this.isNew) {
+        const data = await counter.findOneAndUpdate(
+            {collectionId:"super_admin"},
+            {$inc: {seq : 1}},
+            { new: true, upsert: true }
+        )
+        this.id = data.seq
+    }
+})
+
 export const superAdmin = mongoose.models.super_admin || mongoose.model("super_admin", superAdminSchema);

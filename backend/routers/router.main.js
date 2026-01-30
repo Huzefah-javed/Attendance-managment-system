@@ -8,6 +8,7 @@ import teacherRouter from "./router.teacher.js";
 import departmentAdminRouter from "./departmental.admin.js";
 import { departmentAdminLogin, studentLogin, superAdminLogin, teacherLogin } from "../controller/main.controller.js";
 import { cookieVerification } from "../middleware/cookie.verification.js";
+import { superAdminSignup } from "../controller/admin.controller.js";
 
  const mainRouter = Router()
 
@@ -15,6 +16,7 @@ import { cookieVerification } from "../middleware/cookie.verification.js";
 // mainRouter.post("/studentLogin", studentLogin)
 // mainRouter.post("/teacherLogin", adminLogin)
 mainRouter.post("/superAdminLogin", superAdminLogin)
+mainRouter.post("/superAdminSignup", superAdminSignup)
 mainRouter.post("/departmentalAdminLogin", departmentAdminLogin)
 mainRouter.post("/teacherLogin", teacherLogin)
 mainRouter.post("/studentLogin", studentLogin)
