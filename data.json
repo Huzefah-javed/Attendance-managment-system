@@ -1,6 +1,0 @@
-[
-    { "_id": "super_admins", "seq": 10 },
-    { "_id": "login_sessions", "seq": 0 },
-  { "_id": "students", "seq": 0 },
-  { "_id": "teachers", "seq": 0 }
-]

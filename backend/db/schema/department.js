@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const AutoIncrement = require('mongoose-sequence')(mongoose)
+import { counter } from "./counter.js";
 
 const  departmentSchema =  new mongoose.Schema({
     departmentId:{
@@ -7,20 +7,28 @@ const  departmentSchema =  new mongoose.Schema({
         unique: true
     },
     department_name: {
-        types: String,
+        type: String,
         required: true,
         trim: true
     },
-    institutionId:{
+    institution_id:{
         type: Number,
         required: true
     },
-    hod:{
+    hod_id:{
         type: Number,
-        required: true
     }
 })
 
-departmentSchema.plugin(AutoIncrement, {inc_field: "departmentId"})
+departmentSchema.pre("save", async function(){
+       if (this.isNew) {
+          const data = await counter.findOneAndUpdate(
+            {collectionId: "department"},
+            {$inc:{seq:1}},
+            {new:true, upsert: true}
+           )
+           this.departmentId = data.seq
+       } 
+})
 
-export const department = mongoose.Model("department", departmentSchema)
+export const department = mongoose.models.department || mongoose.model("department", departmentSchema)

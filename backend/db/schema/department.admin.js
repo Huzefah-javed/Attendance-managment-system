@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { counter } from "./counter.js";
 
 const  departmentAdminSchema =  new mongoose.Schema({
     id:{
@@ -23,13 +24,17 @@ const  departmentAdminSchema =  new mongoose.Schema({
     role:{
         type: String,
         default: 'department_admin'
+    },
+    institutional_id:{
+        type: Number,
+        required: true
     }
 })
 
 departmentAdminSchema.pre('save', async function () {
     if (this.isNew) {
            const data =  await counter.findOneAndUpdate(
-                { collectionId: 'students' },
+                { collectionId: 'departmental_admin' },
                 { $inc: { seq: 1 } },
                 { new: true, upsert: true }
             );
