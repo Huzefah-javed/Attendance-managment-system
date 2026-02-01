@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { counter } from "./counter.js";
 
 const  departmentSchema =  new mongoose.Schema({
-    departmentId:{
+    department_id:{
         type: Number,
         unique: true
     },
@@ -27,7 +27,7 @@ departmentSchema.pre("save", async function(){
             {$inc:{seq:1}},
             {new:true, upsert: true}
            )
-           this.departmentId = data.seq
+           this.department_id = data.seq
        } 
 })
 

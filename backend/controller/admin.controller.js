@@ -1,4 +1,4 @@
-import { departmentRegistering, instituteConfirmation, instituteRegistering, signupDepartmentalAdmin, signupSuperAdmin } from "../db/model/admin.model.js"
+import { appointHOD, departmentRegistering, instituteConfirmation, instituteRegistering, signupDepartmentalAdmin, signupSuperAdmin, validatingDepartmentAndHodById } from "../db/model/admin.model.js"
 
 export async function superAdminSignup(req, res, next) {
     const {name,email, password}  = req.body
@@ -62,5 +62,25 @@ export async function registerDepartment(req, res, next) {
 
 
 export async function appointHeadOfDepartment(req, res, next) {
-    const { HodId } = req.body
+    const { Hod_id, department_id, institution_id } = req.body
+    //! Zod validation required here ....
+
+    const validation = await instituteConfirmation(req.user, institution_id)
+      if(!validation.success){
+        if(validation?.msg){return next(validation.msg)}
+        else{return res.status(404).json({statusCode:404, msg:"Institute id not found or invalid institute id"})}
+      }
+      
+      const valid = await validatingDepartmentAndHodById(Hod_id, department_id, institution_id)
+      if(!valid.success){
+        if(valid?.msg){return next(valid.msg)}
+        else{return res.status(404).json({statusCode:404, msg:"department or Hod id not found or invalid "})}
+      }
+
+     const response = await appointHOD(Hod_id, department_id)
+      if (response.success){
+            res.json(response)
+       }else{
+           next(response.msg) 
+       }
 }

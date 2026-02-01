@@ -1,23 +1,31 @@
 import mongoose from "mongoose";
-const AutoIncrement = require('mongoose-sequence')(mongoose)
+import { counter } from "./counter.js";
 
 const  classSchema =  new mongoose.Schema({
-    classId:{
+    class_id:{
         type: Number,
         unique: true
     },
     class_name: {
-        types: String,
+        type: String,
         required: true,
         trim: true
     },
-    departmentId:{
+    department_id:{
         type: Number,
         required: true
     },
     
 })
 
-classSchema.plugin(AutoIncrement, {inc_field: "classId"})
-
-export const classes = mongoose.Model("class", classSchema)
+classSchema.pre("save", async function () {
+    if (this.isNew) {
+       const data = await counter.findOneAndUpdate(
+        {collectionId: "classes"},
+        {$inc:{seq:1}},
+        {new: true, upsert:true}
+       )
+       this.class_id = data.seq
+    }
+})
+export const classes = mongoose.models.class || mongoose.model("class", classSchema)

@@ -25,7 +25,7 @@ const  departmentAdminSchema =  new mongoose.Schema({
         type: String,
         default: 'department_admin'
     },
-    institutional_id:{
+    institution_id:{
         type: Number,
         required: true
     }

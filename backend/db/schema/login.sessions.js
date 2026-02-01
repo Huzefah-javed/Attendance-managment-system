@@ -13,7 +13,7 @@ const  loginSessionsSchema =  new mongoose.Schema({
     },
     role:{
         type: String,
-        enum: ["super_admin", "department_admin", "student", "teacher"],
+        enum: ["super_admin", "departmental_admin", "student", "teacher"],
         required: true,
     },
     createdAt:{

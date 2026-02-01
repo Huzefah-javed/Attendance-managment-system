@@ -24,7 +24,7 @@ mainRouter.post("/studentLogin", studentLogin)
 
 mainRouter.use("/student" , studentRouter)
 mainRouter.use("/teacher" , teacherRouter)
-mainRouter.use("/departmentAdmin" , departmentAdminRouter)
+mainRouter.use("/departmentAdmin", cookieVerification, departmentAdminRouter)
 mainRouter.use("/superAdmin", cookieVerification,superAdminRouter)
 
 export default mainRouter;
