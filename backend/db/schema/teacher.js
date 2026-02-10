@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-
+import { counter } from "./counter.js";
 
 const  teacherSchema =  new mongoose.Schema({
     id:{
@@ -25,7 +25,7 @@ const  teacherSchema =  new mongoose.Schema({
         type: String,
         default: 'teacher'
     },
-    departmentId:{
+    department_id:{
         type: Number,
         required: true
     }

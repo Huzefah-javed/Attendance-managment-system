@@ -1,12 +1,13 @@
-import {Schema, model, models} from "mongoose";
+import mongoose from "mongoose";
+import { counter } from "./counter.js";
 
-const  studentSchema =  new Schema({
+const  studentSchema =  new mongoose.Schema({
     id:{
         type: Number,
         unique: true
     },
     name: {
-        types: String,
+        type: String,
         required: true,
         trim: true
     },
@@ -29,7 +30,7 @@ const  studentSchema =  new Schema({
         type: String,
         default: 'student'
     },
-    classId:{
+    class_id:{
         type: Number,
         required: true
     }
@@ -46,4 +47,4 @@ studentSchema.pre('save', async function () {
     }
 })
 
-export const students = models.student || model("student",studentSchema)
+export const students = mongoose.models.student || mongoose.model("student",studentSchema)

@@ -1,17 +1,17 @@
 import mongoose from "mongoose";
-const AutoIncrement = require('mongoose-sequence')(mongoose)
+import { counter } from "./counter.js";
 
 const  classSubjectsSchema =  new mongoose.Schema({
-    subjectId:{
+    subject_id:{
         type: Number,
         unique: true
     },
     subject_name: {
-        types: String,
+        type: String,
         required: true,
         trim: true
     },
-    classId:{
+    class_id:{
         type: Number,
         required: true
     },
@@ -21,6 +21,15 @@ const  classSubjectsSchema =  new mongoose.Schema({
     
 })
 
-classSubjectsSchema.plugin(AutoIncrement, {inc_field: "subjectId"})
+classSubjectsSchema.pre("save", async function (){
+    if (this.isNew) {
+        const data =  await counter.findOneAndUpdate(
+                        { collectionId: 'students' },
+                        { $inc: { seq: 1 } },
+                        { new: true, upsert: true }
+                    );
+        this.subject_id = data.seq
+    }
+})
 
-export const classesSubjects = mongoose.Model("classes_subject", classSubjectsSchema)
+export const classesSubjects = mongoose.models.classes_subject || mongoose.model("classes_subject", classSubjectsSchema)

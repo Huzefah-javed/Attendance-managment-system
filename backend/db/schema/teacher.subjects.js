@@ -1,13 +1,8 @@
 import mongoose from "mongoose";
-const AutoIncrement = require('mongoose-sequence')(mongoose)
 
 const  teacherSubjectsSchema =  new mongoose.Schema({
-    subjectId:{
-        type: Number,
-        unique: true
-    },
     subject_name: {
-        types: String,
+        type: String,
         required: true,
         trim: true
     },
@@ -18,6 +13,4 @@ const  teacherSubjectsSchema =  new mongoose.Schema({
     
 })
 
-teacherSubjectsSchema.plugin(AutoIncrement, {inc_field: "subjectId"})
-
-export const teacherSubjects = mongoose.Model("teachers_subject", teacherSubjectsSchema)
+export const teacherSubjects = mongoose.model.teachers_subject || mongoose.model("teachers_subject", teacherSubjectsSchema)

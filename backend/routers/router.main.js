@@ -23,7 +23,7 @@ mainRouter.post("/studentLogin", studentLogin)
 // mainRouter.get("/auth/me", cookieVerification, userInfoRouter)
 
 mainRouter.use("/student" , studentRouter)
-mainRouter.use("/teacher" , teacherRouter)
+mainRouter.use("/teacher", cookieVerification, teacherRouter)
 mainRouter.use("/departmentAdmin", cookieVerification, departmentAdminRouter)
 mainRouter.use("/superAdmin", cookieVerification,superAdminRouter)
 
