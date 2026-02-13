@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-const AutoIncrement = require('mongoose-sequence')(mongoose)
+import { counter } from "./counter.js";
 
 const  attendanceSessionsSchema =  new mongoose.Schema({
     sessionId:{
@@ -7,7 +7,7 @@ const  attendanceSessionsSchema =  new mongoose.Schema({
         unique: true
     },
     class_id: {
-        types: Number,
+        type: Number,
         required: true,
     },
     session_date:{
@@ -17,19 +17,25 @@ const  attendanceSessionsSchema =  new mongoose.Schema({
     },
     is_marked:{
         type: Boolean,
-        required: true
     },
     total_present_students:{
         type: Number,
-        required: true
     },
     total_students:{
         type: Number,
-        required: true
     }
     
 })
 
-attendanceSessionsSchema.plugin(AutoIncrement, {inc_field: "sessionId"})
+attendanceSessionsSchema.pre("save",async function(){
+    if (this.isNew) {
+               const data =  await counter.findOneAndUpdate(
+                    { collectionId: 'attendanceSession' },
+                    { $inc: { seq: 1 } },
+                    { new: true, upsert: true }
+                );
+                this.sessionId = data.seq
+        }
+})
 
-export const attendanceSessions = mongoose.Model("attendance_session", attendanceSessionsSchema)
+export const attendanceSessions = mongoose.models.attendance_session || mongoose.model("attendance_session", attendanceSessionsSchema) 

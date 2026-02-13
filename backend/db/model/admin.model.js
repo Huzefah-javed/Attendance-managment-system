@@ -125,8 +125,8 @@ return result
 }
 
                         
-                        export async function validatingDepartmentAndHodById(Hod_id, department_id, institution_id) {
-                            let result;
+    export async function validatingDepartmentAndHodById(Hod_id, department_id, institution_id) {
+         let result;
     try {
             const response = await department.aggregate([
                      {
