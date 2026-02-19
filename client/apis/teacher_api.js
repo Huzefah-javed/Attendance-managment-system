@@ -6,31 +6,31 @@ export async function teacherLogin({email, password}){
 }
 
 export async function createLecSession(data){
-   const res = await api.post("admin/create-session", data) 
+   const res = await api.post("teacher/create-session", data) 
    return res.data  
 }
 
 export async function getStudentForAttendance(...args){
-   const res = await api.get(`admin/get-students/${args[0]}`) 
+   const res = await api.get(`teacher/get-students/${args[0]}`) 
    return res.data  
 }
 
 export async function markingAttendance(...args){
-   const response = await api.post("/admin/mark-attendance", {sessionId:args[0], presentStudents:args[1]})
+   const response = await api.post("/teacher/mark-attendance", {sessionId:args[0], presentStudents:args[1]})
    return response.data
 }
 
 export async function latestSessionHistory(){
-   const response = await api.get("/admin/latest-sessions-history")
+   const response = await api.get("/teacher/latest-sessions-history")
    return response.data
 }
 
 export async function sessionHistory(args){
-   const response = await api.post("/admin/sessions-history", {skip: args[0]})
+   const response = await api.post("/teacher/sessions-history", {skip: args[0]})
    return response.data
 }
 
 export async function sessionHistoryDetails(...args){
-   const response = await api.post("/admin/sessions-history/details", {sessionId: args[0]})
+   const response = await api.post("/teacher/sessions-history/details", {sessionId: args[0]})
    return response.data
 }

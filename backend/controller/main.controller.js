@@ -53,17 +53,16 @@ async function login({ id, name, email, role, status }, res) {
 //         }
 //  }
 
-//  export async function userInfoRouter(req, res){
-//     try {
-//         const name = req.user.NAME || ""
-//         const role = req.user.ROLE || ""
-//         const subject = req.user.SUBJECT || ""
+ export async function userInfoRouter(req, res){
+    try {
+        const name = req.user.name || ""
+        const role = req.user.role || ""
 
-//         res.json({name, role, subject})
-//     } catch (error) {
-//         console.log(error)   
-//         }
-//  }
+        res.json({name, role})
+    } catch (error) {
+        console.log(error)   
+        }
+ }
 
 export async function superAdminLogin(req, res, next) {
       const {email, password} = req.body;

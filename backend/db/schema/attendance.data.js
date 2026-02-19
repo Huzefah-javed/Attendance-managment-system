@@ -1,13 +1,8 @@
 import mongoose from "mongoose";
-const AutoIncrement = require('mongoose-sequence')(mongoose)
 
 const  attendanceDataSchema =  new mongoose.Schema({
-    attendanceId:{
-        type: Number,
-        unique: true
-    },
     session_id: {
-        types: Number,
+        type: Number,
         required: true,
     },
     studentId:{
@@ -22,6 +17,4 @@ const  attendanceDataSchema =  new mongoose.Schema({
     
 })
 
-attendanceDataSchema.plugin(AutoIncrement, {inc_field: "attendanceId"})
-
-export const attendanceData = mongoose.Model("attendance_sessions_data", attendanceDataSchema)
+export const attendanceData = mongoose.models.attendance_sessions_data|| mongoose.model("attendance_sessions_data", attendanceDataSchema)

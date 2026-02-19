@@ -1,4 +1,4 @@
-import { attendanceSession, studentsForAttendance, teacherSubjectRegistering, validateTeacherClass } from "../db/model/teacher.model.js"
+import { attendanceSession, markAttendance, studentsForAttendance, teacherSubjectRegistering, validateSessionId, validateTeacherClass } from "../db/model/teacher.model.js"
 
 
 export async function registerSubjects(req, res, next) {
@@ -37,6 +37,22 @@ export async function gettingStudentForAttendance(req, res, next) {
         else{return res.status(404).json({statusCode:404, msg:"Class id not found or invalid class id"})}
       }
        const response = await studentsForAttendance(classId, sessionId)
+       if (response.success){
+            res.json(response)
+       }else{
+           next(response.msg) 
+       }
+}
+
+export async function markingStudentAttendance(req, res, next) {
+     const { sessionId, studIdArr } = req.body;
+    //! ZOd validation here ....
+       const validation = await validateSessionId(sessionId, req.user.id)
+        if(!validation.success){
+        if(validation?.msg){return next(validation.msg)}
+        else{return res.status(404).json({statusCode:404, msg:"session not found or already marked"})}
+      }
+       const response = await markAttendance(sessionId, studIdArr)
        if (response.success){
             res.json(response)
        }else{

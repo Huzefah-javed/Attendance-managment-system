@@ -17,12 +17,19 @@ const  attendanceSessionsSchema =  new mongoose.Schema({
     },
     is_marked:{
         type: Boolean,
+        default:false
     },
     total_present_students:{
         type: Number,
+        default:0
+    },
+    teacher_id:{
+        type: Number,
+        required:true
     },
     total_students:{
         type: Number,
+        default:0
     }
     
 })

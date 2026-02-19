@@ -1,3 +1,4 @@
+import { attendanceData } from "../schema/attendance.data.js";
 import { attendanceSessions } from "../schema/attendance.sessions.js";
 import { classesSubjects } from "../schema/class.subjects.js";
 import { students } from "../schema/student.js";
@@ -77,8 +78,13 @@ export async function studentsForAttendance(classId, session_id){
             return result;
         }
         
-        const studentsData = await students.find({ class_id });
-        result = {statusCode:200, success:true , studentsData}
+        const students_data = await students.find({ class_id }, {name:1, roll_number:1, _id:0});
+        result = {
+                     statusCode:200,
+                      success:true , 
+                      session_id: response.sessionId,
+                      students_data
+                    }
         return result
 
    } catch (error) {
@@ -89,3 +95,58 @@ export async function studentsForAttendance(classId, session_id){
             return result
    }
 }
+
+export async function validateSessionId(session_id, teacher_id){
+          let result;
+        try {
+            const response = await attendanceSessions.aggregate([
+                     {
+                        $match:{$and:[
+                            {sessionId:Number(session_id)},
+                            {teacher_id: Number(teacher_id)},
+                            {is_marked:false}
+                        ]}
+                    }
+                ])
+                 if(response && response.length !== 0){
+                    result = {success: true}
+                    return result;
+                }else{
+                    result = {success: false}
+                    return result
+                }
+            } catch (error) {
+                console.log(error)
+                 error.statusCode = 500
+                error.message = "Some thing went wrong while session validation"
+                result = {success: false, msg: error}
+                return result
+            }
+    }
+
+export async function markAttendance(session_id, studIdArr) {
+        let result;
+        try {
+          const attendance = studIdArr.map((data)=>{
+                return {
+                    ...data,
+                    session_id
+                }
+            })
+            await attendanceData.insertMany(attendance);
+            await attendanceSessions.updateOne(
+                {sessionId: session_id},
+                {
+                    is_marked:true,
+                    total_present_students:attendance.length
+                }
+            )
+            result={statusCode:201, success: true, msg:"Attendance marked successfully"}
+        } catch (error) {
+            console.log(error)
+            error.statusCode = 500
+            error.message = "Some thing went wrong while marking attendance"
+            result = {success: false, msg: error}
+        }
+        return result
+    }

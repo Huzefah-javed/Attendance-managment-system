@@ -13,14 +13,17 @@ export default function AdminLogin(){
 
 const dispatch = useDispatch()
 const navigate = useNavigate()
+
   async function handleLogin(e){
     e.preventDefault()
      console.log(data)
         if(data.password && data.email){
         const authData = await teacherLogin({email: data.email, password: data.password})
         console.log(authData)
-        dispatch(addAuthData(authData.msg))
-        navigate("/teacher/markAttendance")
+        if (authData.status == 200) {
+          dispatch(addAuthData(authData.msg))
+          navigate("/teacher/home")
+          }
         }
         
         setData({
