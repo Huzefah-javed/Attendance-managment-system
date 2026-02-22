@@ -24,7 +24,7 @@ const router = createBrowserRouter([
       </ProtectionLayer>
     ),
     children: [
-      { path: "/teacher/home", element: <TeacherHome /> },
+      { path: "/teacher/assignClasses", element: <TeacherHome /> },
       { path: "/teacher/lecturesDetails", element: <LectureDetailHistory /> ,},
       { path: "/teacher/markAttendance", element: <AdminSessions /> ,}
     ]

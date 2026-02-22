@@ -24,7 +24,7 @@ const  classSubjectsSchema =  new mongoose.Schema({
 classSubjectsSchema.pre("save", async function (){
     if (this.isNew) {
         const data =  await counter.findOneAndUpdate(
-                        { collectionId: 'students' },
+                        { collectionId: 'subjects' },
                         { $inc: { seq: 1 } },
                         { new: true, upsert: true }
                     );

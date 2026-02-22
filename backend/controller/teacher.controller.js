@@ -1,4 +1,4 @@
-import { attendanceSession, markAttendance, studentsForAttendance, teacherSubjectRegistering, validateSessionId, validateTeacherClass } from "../db/model/teacher.model.js"
+import { attendanceSession, getClasses, markAttendance, studentsForAttendance, teacherSubjectRegistering, validateSessionId, validateTeacherClass } from "../db/model/teacher.model.js"
 
 
 export async function registerSubjects(req, res, next) {
@@ -59,4 +59,15 @@ export async function markingStudentAttendance(req, res, next) {
            next(response.msg) 
        }
 }
+
+export async function getAssignedClasses(req, res, next) {
+
+       const response = await getClasses(req.user.id)
+       if (response.success){
+            res.json(response)
+       }else{
+           next(response.msg) 
+       }
+}
+
 

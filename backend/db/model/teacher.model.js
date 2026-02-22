@@ -1,3 +1,4 @@
+import { response } from "express";
 import { attendanceData } from "../schema/attendance.data.js";
 import { attendanceSessions } from "../schema/attendance.sessions.js";
 import { classesSubjects } from "../schema/class.subjects.js";
@@ -149,4 +150,47 @@ export async function markAttendance(session_id, studIdArr) {
             result = {success: false, msg: error}
         }
         return result
+    }
+
+export async function getClasses(teacherId) {
+        let result;
+        try {
+         const response =   await classesSubjects.aggregate([
+                {
+                    $match:{teaches_by:teacherId}
+                },
+                {
+                    $lookup:{
+                        from:"classes",
+                        foreignField:"class_id",
+                        localField:"class_id",
+                        as: "assignedClasses"
+                    }
+                },
+                {
+                    $unwind:"$assignedClasses"
+                },
+                {
+                    $project:{
+                        _id:0,
+                        subject_name:1,
+                        class_name: "$assignedClasses.class_name",
+                        class_id: "$assignedClasses.class_id"
+                    }
+                }
+            ])
+            if(response && response.length !== 0){
+                    result = {success: true, msg:response}
+                    return result;
+                }else{
+                    result = {success: false}
+                    return result
+                }
+        } catch (error) {
+            console.log(error)
+            error.statusCode = 500
+            error.message = "Some thing went wrong while getting assigned class data"
+            result = {success: false, msg: error}
+            return result
+        }
     }

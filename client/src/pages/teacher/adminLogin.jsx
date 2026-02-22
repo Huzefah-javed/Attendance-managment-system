@@ -22,7 +22,7 @@ const navigate = useNavigate()
         console.log(authData)
         if (authData.status == 200) {
           dispatch(addAuthData(authData.msg))
-          navigate("/teacher/home")
+          navigate("/teacher/assignClasses")
           }
         }
         

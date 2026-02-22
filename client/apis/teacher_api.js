@@ -34,3 +34,8 @@ export async function sessionHistoryDetails(...args){
    const response = await api.post("/teacher/sessions-history/details", {sessionId: args[0]})
    return response.data
 }
+
+export async function getClasses(){
+   const response = await api.get("/teacher/getClasses")
+   return response.data
+}
