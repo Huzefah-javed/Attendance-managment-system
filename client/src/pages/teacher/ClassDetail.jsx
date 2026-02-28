@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom"
+import { Link, useParams } from "react-router-dom"
 import dataRender from "../../hooks/DataRender"
 import { getSingleClassData } from "../../../apis/teacher_api"
 import Loader from "../../components/Loader"
@@ -14,7 +14,7 @@ export function ClassDetail(){
               if(classData.err){
                   console.log(classData.err)
               }
-              
+
     return (
         <div class="min-h-screen bg-gray-50 p-8">
   <div class="max-w-4xl mx-auto mb-8 flex justify-between items-end">
@@ -27,6 +27,21 @@ export function ClassDetail(){
       <span class="text-xs uppercase tracking-wider text-gray-500 font-semibold">Total Students</span>
     </div>
   </div>
+      <div class="max-w-4xl mx-auto mb-2 flex justify-start items-end gap-2">
+
+    <Link 
+    className="flex items-center gap-3 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
+    to={`/teacher/markAttendance/${classId}`}
+    >
+    Mark Attendance
+    </Link>
+    <Link
+     className="flex items-center gap-3 bg-white text-blue-600 border-2 border-blue-600 px-6 py-3 rounded-xl font-semibold text-sm hover:-translate-y-0.5 hover:bg-blue-50 transition-all duration-300"
+     to={`/teacher/attendanceHistory/${classId}`}
+     >
+    Attendance History
+    </Link>
+      </div>
 
   <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-md overflow-hidden border border-gray-100">
     <table class="w-full text-left border-collapse">

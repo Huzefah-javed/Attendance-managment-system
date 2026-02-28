@@ -27,8 +27,8 @@ const router = createBrowserRouter([
     children: [
       { path: "/teacher/assignClasses", element: <TeacherHome /> },
       { path: "/teacher/assignClasses/:classId", element: <ClassDetail /> },
-      { path: "/teacher/lecturesDetails", element: <LectureDetailHistory /> ,},
-      { path: "/teacher/markAttendance", element: <AdminSessions /> ,}
+      { path: "/teacher/attendanceHistory/:classId", element: <LectureDetailHistory /> ,},
+      { path: "/teacher/markAttendance/:classId", element: <AdminSessions /> ,}
     ]
   },
   
