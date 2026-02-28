@@ -11,6 +11,7 @@ import { useSelector } from "react-redux"
 import { Structure } from "./pages/outlet"
 import { ProtectionLayer } from "./pages/protection"
 import { TeacherHome } from "./pages/teacher/Home"
+import { ClassDetail } from "./pages/teacher/ClassDetail"
 
 function App (){
   const authData = useSelector(state => state.authInfo)
@@ -25,6 +26,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: "/teacher/assignClasses", element: <TeacherHome /> },
+      { path: "/teacher/assignClasses/:classId", element: <ClassDetail /> },
       { path: "/teacher/lecturesDetails", element: <LectureDetailHistory /> ,},
       { path: "/teacher/markAttendance", element: <AdminSessions /> ,}
     ]

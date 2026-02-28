@@ -39,3 +39,9 @@ export async function getClasses(){
    const response = await api.get("/teacher/getClasses")
    return response.data
 }
+
+export async function getSingleClassData(args){
+   const class_id = args[0]
+   const response = await api.get(`/teacher/ClassData/${class_id}`)
+   return response.data
+}

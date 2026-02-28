@@ -4,6 +4,7 @@ import { attendanceSessions } from "../schema/attendance.sessions.js";
 import { classesSubjects } from "../schema/class.subjects.js";
 import { students } from "../schema/student.js";
 import { teacherSubjects } from "../schema/teacher.subjects.js";
+import { classes } from "../schema/classes.js";
 
 
 export async function teacherSubjectRegistering(subject_name, teacher_id){
@@ -194,3 +195,75 @@ export async function getClasses(teacherId) {
             return result
         }
     }
+
+export async function classData(classId, teacherId) {
+        let result;
+        try {
+         const response =  await classes.aggregate([
+                {
+                    $match:{
+                        class_id:classId
+                    }
+                },
+                {
+                    $lookup:{
+                        from:"classes_subjects",
+                        foreignField:"class_id",
+                        localField:"class_id",
+                        as: "assignedClasses",
+                        pipeline:[
+                            {
+                                $match:{teaches_by: teacherId}
+                            }
+                        ]
+                    }
+                },
+                {
+                    $unwind:"$assignedClasses"
+                },
+                {
+                    $lookup:{
+                        from:"students",
+                        foreignField:"class_id",
+                        localField:"class_id",
+                        as: "students",
+                    }
+                },
+                {
+                    $project:{
+                        _id: 0,
+                        class_name:1,
+                        subject_name: "$assignedClasses.subject_name",
+                        totalStudentCount: { 
+                                $size: { $ifNull: ["$students", []] } 
+                         },
+                        students: {
+                                $map: {
+                                    input: "$students",
+                                    as: "s",
+                                    in: {
+                                   name: "$$s.name",
+                                   roll_number: "$$s.roll_number"
+                                }
+                            }
+                        }
+                    }
+                }
+
+            ])
+            if(response && response.length !== 0){
+                    result = {success: true, msg:response[0]}
+                    return result;
+                }else{
+                    result = {success: false}
+                    return result
+                }
+        } catch (error) {
+            console.log(error)
+            error.statusCode = 500
+            error.message = "Some thing went wrong while getting assigned class data"
+            result = {success: false, msg: error}
+            return result
+        }
+    }
+

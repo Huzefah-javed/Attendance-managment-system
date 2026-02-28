@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { getClasses } from "../../../apis/teacher_api";
 import Loader from "../../components/Loader";
 import dataRender from "../../hooks/DataRender";
@@ -56,11 +57,12 @@ export function TeacherHome(){
                
                 
               </div>
-                 <button
+                 <Link
+                 to={`${data.class_id}`}
                   className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-3 w-full md:w-fit mt-2 rounded-lg text-xs"
                   >
                   View
-                </button>
+                </Link>
              
                              </section>
                 )
