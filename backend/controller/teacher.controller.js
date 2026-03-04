@@ -1,4 +1,4 @@
-import { attendanceSession, classData, getClasses, markAttendance, studentsForAttendance, teacherSubjectRegistering, validateSessionId, validateTeacherClass } from "../db/model/teacher.model.js"
+import { attendanceSession, classData, getClasses, latestSessionsData, markAttendance, studentsForAttendance, teacherSubjectRegistering, validateSessionId, validateTeacherClass } from "../db/model/teacher.model.js"
 
 
 export async function registerSubjects(req, res, next) {
@@ -13,16 +13,18 @@ export async function registerSubjects(req, res, next) {
 }
 
 export async function creatingSession(req, res, next) {
-    const {class_id} = req.body
+    const {class_id, subject_id} = req.body
     //! ZOd validation here ....
        const validation = await validateTeacherClass(class_id, req.user.id)
         if(!validation.success){
         if(validation?.msg){return next(validation.msg)}
         else{return res.status(404).json({statusCode:404, msg:"Class id not found or invalid class id"})}
       }
-       const response = await attendanceSession(class_id)
-       if (response.success){
-            res.json(response)
+      // please write validation for this subject id weather it is belong to teacher or not.........
+      
+      const response = await attendanceSession(class_id, subject_id)
+      if (response.success){
+          res.json(response)
        }else{
            next(response.msg) 
        }
@@ -67,18 +69,34 @@ export async function getAssignedClasses(req, res, next) {
             res.json(response)
        }else{
            next(response.msg) 
-       }
-}
-
+        }
+    }
+    
 export async function getSingleClassData(req, res, next) {
-        const { class_id } = req.params
+        const { class_id, subject_id } = req.params
         const validation = await validateTeacherClass(Number(class_id), req.user.id)
         if(!validation.success){
         if(validation?.msg){return next(validation.msg)}
         else{return res.status(404).json({statusCode:404, msg:"Class id not found or invalid class id"})}
       }
+      
+       const response = await classData(Number(class_id), Number(subject_id),req.user.id)
+       if (response.success){
+            res.json(response)
+       }else{
+           next(response.msg) 
+       }
+}
 
-       const response = await classData(Number(class_id), req.user.id)
+export async function latestSessionHistory(req, res, next) {
+    const { class_id, subject_id } = req.params
+    const validation = await validateTeacherClass(Number(class_id), req.user.id)
+    if(!validation.success){
+        if(validation?.msg){return next(validation.msg)}
+        else{return res.status(404).json({statusCode:404, msg:"Class id not found or invalid class id"})}
+      }
+
+       const response = await latestSessionsData(Number(class_id), Number(subject_id),req.user.id)
        if (response.success){
             res.json(response)
        }else{

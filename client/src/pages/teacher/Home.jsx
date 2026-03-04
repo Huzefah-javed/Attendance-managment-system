@@ -58,7 +58,7 @@ export function TeacherHome(){
                 
               </div>
                  <Link
-                 to={`${data.class_id}`}
+                 to={`${data.class_id}/${data.subject_id}`}
                   className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-3 w-full md:w-fit mt-2 rounded-lg text-xs"
                   >
                   View

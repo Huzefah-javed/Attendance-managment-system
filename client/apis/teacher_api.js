@@ -26,7 +26,9 @@ export async function latestSessionHistory(){
 }
 
 export async function sessionHistory(args){
-   const response = await api.post("/teacher/sessions-history", {skip: args[0]})
+    const class_id = args[0]
+   const subject_id = args[1]
+   const response = await api.get(`/teacher/latest-sessions-history/${class_id}/${subject_id}`)
    return response.data
 }
 
@@ -42,6 +44,7 @@ export async function getClasses(){
 
 export async function getSingleClassData(args){
    const class_id = args[0]
-   const response = await api.get(`/teacher/ClassData/${class_id}`)
+   const subject_id = args[1]
+   const response = await api.get(`/teacher/classData/${class_id}/${subject_id}`)
    return response.data
 }

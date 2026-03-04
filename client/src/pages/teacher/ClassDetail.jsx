@@ -4,8 +4,8 @@ import { getSingleClassData } from "../../../apis/teacher_api"
 import Loader from "../../components/Loader"
 
 export function ClassDetail(){
-        const { classId } = useParams()
-        const classData = dataRender(getSingleClassData, [classId])
+        const { classId, subjectId } = useParams()
+        const classData = dataRender(getSingleClassData, [classId, subjectId])
               
               if (classData.loading) {
                 return <Loader/>
@@ -31,13 +31,13 @@ export function ClassDetail(){
 
     <Link 
     className="flex items-center gap-3 bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold text-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300"
-    to={`/teacher/markAttendance/${classId}`}
+    to={`/teacher/markAttendance/${classId}/${subjectId}`}
     >
     Mark Attendance
     </Link>
     <Link
      className="flex items-center gap-3 bg-white text-blue-600 border-2 border-blue-600 px-6 py-3 rounded-xl font-semibold text-sm hover:-translate-y-0.5 hover:bg-blue-50 transition-all duration-300"
-     to={`/teacher/attendanceHistory/${classId}`}
+     to={`/teacher/attendanceHistory/${classId}/${subjectId}`}
      >
     Attendance History
     </Link>

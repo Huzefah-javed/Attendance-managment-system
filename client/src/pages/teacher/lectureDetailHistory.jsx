@@ -7,13 +7,16 @@ import { DonutChartComponent } from "../../components/donutChart";
 import Loader from "../../components/Loader";
 import dataRender from "../../hooks/DataRender";
 import {motion} from "motion/react"
+import { useParams } from "react-router-dom";
 
 export default function LectureDetailHistory(){
 
+  
+const { classId, subjectId } = useParams()
 const [selectedSessionId, setSelectedSessionId]= useState(-1)
 const [page, setPage]= useState(0)
 const [showSessions, setShowSessions]= useState(true)
-const sessions = dataRender(sessionHistory, [0])
+const sessions = dataRender(sessionHistory, [classId, subjectId])
 const sessionDetails = useFetchData(sessionHistoryDetails)
 
 const sessionsRef = useRef(null);

@@ -50,11 +50,11 @@ export async function validateTeacherClass(class_id, teacher_id){
         return result
 }
 
-export async function attendanceSession(class_id) {
+export async function attendanceSession(class_id, subject_id) {
     let result;
     try {
         await attendanceSessions.create(
-            {class_id}
+            {class_id, subject_id}
         )
         result={statusCode:201, success: true, msg:"Attendance session created successfully"}
     } catch (error) {
@@ -175,6 +175,7 @@ export async function getClasses(teacherId) {
                     $project:{
                         _id:0,
                         subject_name:1,
+                        subject_id:1,
                         class_name: "$assignedClasses.class_name",
                         class_id: "$assignedClasses.class_id"
                     }
@@ -196,7 +197,7 @@ export async function getClasses(teacherId) {
         }
     }
 
-export async function classData(classId, teacherId) {
+export async function classData(classId,subject_id, teacherId) {
         let result;
         try {
          const response =  await classes.aggregate([
@@ -213,7 +214,7 @@ export async function classData(classId, teacherId) {
                         as: "assignedClasses",
                         pipeline:[
                             {
-                                $match:{teaches_by: teacherId}
+                                $match:{$and:[{teaches_by: teacherId}, {subject_id}]}
                             }
                         ]
                     }
@@ -233,7 +234,9 @@ export async function classData(classId, teacherId) {
                     $project:{
                         _id: 0,
                         class_name:1,
+                        class_id:1,
                         subject_name: "$assignedClasses.subject_name",
+                        subject_id: "$assignedClasses.subject_id",
                         totalStudentCount: { 
                                 $size: { $ifNull: ["$students", []] } 
                          },
@@ -265,5 +268,19 @@ export async function classData(classId, teacherId) {
             result = {success: false, msg: error}
             return result
         }
+    }
+
+export async function latestSessionsData(classId, subject_id, teacherId) {
+        let result;
+        try {
+            const response =  await  attendanceSessions.find({class_id:classId, teacher_id:teacherId, subject_id}, {_id:0, session_date:1, sessionId:1, is_marked:1}).sort().limit(10)        
+            result = {success:true, statusCode:200, data: response}
+        } catch (error) {
+            console.log(error)
+            error.statusCode = 500
+            error.message = "Some thing went wrong while getting attendance data"
+            result = {success: false, msg: error}
+        }
+        return result
     }
 

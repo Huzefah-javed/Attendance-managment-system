@@ -10,6 +10,10 @@ const  attendanceSessionsSchema =  new mongoose.Schema({
         type: Number,
         required: true,
     },
+    subject_id:{
+        type: Number,
+        required: true
+    },
     session_date:{
         type: Date,
         required: true,
