@@ -8,27 +8,26 @@ import dataRender from "../../hooks/DataRender"
 import Loader from "../../components/Loader"
 import { useSelector } from "react-redux"
 import {motion, AnimatePresence} from "motion/react"
+import { useParams } from "react-router-dom"
 
-function AdminSession(){
-  const teacherData =  useSelector(state => state.authInfo);
+function AdminSessions(){
 
+  const { classId, subjectId } = useParams()
 const [session, setSession] = useState({
-  subjectName: teacherData.subject,
   sessionHour: 0,
   sessionMin: 0,
-   createdBy: teacherData.name
   })
-  const [sessionId, setSessionId]  = useState(null)
-  const studentsForAttendance = useFetchData(getStudentForAttendance)
-const {gettingData, loading, error, msg} = usePostData(createLecSession)
-let fetch = dataRender(latestSessionHistory, [])
 
+const [sessionId, setSessionId]  = useState(null)
+const studentsForAttendance = useFetchData(getStudentForAttendance)
+const {gettingData, loading, error, msg} = usePostData(createLecSession)
+let fetch = dataRender(latestSessionHistory, [classId, subjectId])
 
 async function handleFormSubmit(e){
   e.preventDefault()
-  if (session.subjectName|| session.sessionEndTime|| session.createdBy) {
-    await gettingData(session);
-    fetch.refetch();
+  if (session.sessionHour && session.sessionMin) {
+    await gettingData(session, classId, subjectId);
+     fetch.refetch();
   }
 }
 console.log(session)
@@ -45,7 +44,6 @@ if (error || fetch.error) {
   console.log(error || fetch.error)
 }
 
-
 function handleStudentForAttendance(sessionId){
     studentsForAttendance.gettingData(sessionId)
     setSessionId(sessionId)
@@ -55,7 +53,7 @@ function handleCloseAttendancePage(){
   studentsForAttendance.setMsg("")
 }
   return (
-      <div className="min-h-screen bg-gray-50 px-4 py-8 sm:py-12">
+  <div className="min-h-screen bg-gray-50 px-4 py-8 sm:py-12">
   <div className=" w-full ">
     <div className=" py-4">
       <motion.h1 
@@ -82,26 +80,13 @@ function handleCloseAttendancePage(){
       <form 
           className="h-[80%]  flex flex-col justify-evenly" onSubmit={(e)=>handleFormSubmit(e)}>
           <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 sm:gap-6">
-          {/* Subject */}
-          <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">
-              Subject
-            </label>
-            <select
-              className="w-full rounded-lg border border-gray-300 bg-white px-3 text-gray-400 py-2.5 text-sm outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition"
-              onChange={(e)=>setSession((prev)=>({...prev, subjectName: e.target.value}))} disabled>
-                <option value={teacherData.subject}>
-                  {teacherData.subject}
-                </option>
-            </select>
-          </div>
 
           {/* End Time */}
         <div className="space-y-2">
   <label className="block text-sm font-medium text-gray-700">
     Session Time Length
   </label>
-  <div className="flex items-center gap-3">
+  <div className="flex flex-col gap-5">
     {/* Hours Dropdown */}
     <div className="flex-1">
       <select 
@@ -116,9 +101,6 @@ function handleCloseAttendancePage(){
         <option value="02">02</option>
       </select>
     </div>
-
-    {/* Separator */}
-    <span className="text-2xl font-bold text-gray-400">:</span>
 
     {/* Minutes Dropdown */}
     <div className="flex-1">
@@ -169,22 +151,21 @@ function handleCloseAttendancePage(){
               <tr>
                 <th className="px-1 md:px-3 md:py-0.75 py-2 text-left text-[0.75rem] md:text-sm font-semibold text-gray-700">lecture Id</th>
                 <th className="px-1 md:px-3 md:py-0.75 py-2 text-left text-[0.75rem] md:text-sm font-semibold text-gray-700">Date</th>
-                <th className="px-1 md:px-3 md:py-0.75 py-2 text-left text-[0.75rem] md:text-sm font-semibold text-gray-700">Subject</th>
+                <th className="px-1 md:px-3 md:py-0.75 py-2 text-left text-[0.75rem] md:text-sm font-semibold text-gray-700">Session ends at</th>
                 <th className="px-1 md:px-3 md:py-0.75 py-2 text-center text-[0.75rem] md:text-sm font-semibold text-gray-700">Action</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
-              { fetch?.data?.map((student) => (
-                <tr key={student.id} className="hover:bg-gray-50 transition-colors">
-                  <td className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm  text-gray-600">{student.SESSION_ID}</td>
-                  <td className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm text-gray-600">{new Date(student.SESSION_DATE).toLocaleDateString('en-GB')}</td>
-                  <td className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm  text-gray-600">{student.SUBJECT}</td>
+              { fetch?.data?.map((ses) => (
+                <tr key={ses.sessionId} className="hover:bg-gray-50 transition-colors">
+                  <td className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm  text-gray-600">{ses.sessionId}</td>
+                  <td className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm text-gray-600">{new Date(ses.session_date).toLocaleDateString('en-GB')}</td>
+                  <td className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm text-gray-600">{new Date(ses.session_end_at).toLocaleTimeString()}</td>
                   <td className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm ">
                     <div className="flex gap-1 justify-center">
-                      {(!(student.IS_ATTENDANCE_MARKED) && new Date().toLocaleDateString() == new Date(student.SESSION_DATE).toLocaleDateString() && new Date().getTime() < new Date((new Date(student.SESSION_DATE).toLocaleDateString('en-CA') + "T"+ student.END_DATE +".000Z")).getTime() )? 
-
+                      {!(ses.is_marked)? 
                       (<button 
-                      onClick={()=>handleStudentForAttendance(student.SESSION_ID)}
+                      onClick={()=>handleStudentForAttendance(ses.sessionId)}
                       className="px-1 md:px-3 md:py-2 py-0.75 bg-green-500 hover:bg-green-600 text-[0.75rem] md:text-sm  text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
                         Mark Attendance
                       </button>):(<p className="px-1 md:px-3 md:py-2 py-0.75 text-[0.75rem] md:text-sm  text-gray-600">Unactionable</p>)}
@@ -248,4 +229,4 @@ function handleCloseAttendancePage(){
   )
 }
 
-export default AdminSession
+export default AdminSessions

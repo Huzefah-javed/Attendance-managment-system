@@ -34,6 +34,10 @@ const  attendanceSessionsSchema =  new mongoose.Schema({
     total_students:{
         type: Number,
         default:0
+    },
+    session_end_at:{
+        type: Date,
+        required:true
     }
     
 })

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { creatingSession, getAssignedClasses, getSingleClassData, gettingStudentForAttendance, latestSessionHistory, markingStudentAttendance, registerSubjects } from "../controller/teacher.controller.js";
+import { creatingSession, getAssignedClasses, getSessionHistory, getSingleClassData, gettingStudentForAttendance, latestSessionHistory, markingStudentAttendance, registerSubjects } from "../controller/teacher.controller.js";
 // import { creatingSession, getLatestSessionHistory, getSessionHistory, getSessionHistoryDetails, gettingStudentForAttendance, individualAttendanceData, markingStudentAttendance } from "../controller/admin.controller.js";
 
 const teacherRouter = Router();
@@ -13,7 +13,7 @@ teacherRouter.post("/mark-attendance", markingStudentAttendance)
 teacherRouter.get("/getClasses", getAssignedClasses)
 teacherRouter.get("/classData/:class_id/:subject_id", getSingleClassData)
 // adminRouter.post("/individual-attendance-history", individualAttendanceData)
-// adminRouter.post("/sessions-history", getSessionHistory)
+teacherRouter.post("/sessions-history", getSessionHistory)
 // adminRouter.post("/sessions-history/details", getSessionHistoryDetails)
 
 export default teacherRouter;

@@ -47,14 +47,39 @@ export async function validateTeacherClass(class_id, teacher_id){
             result = {success: false, msg: error}
             return result
         }
-        return result
+    }
+
+export async function validateTeacherSession(sessionId, teacherId){
+      let result;
+    try {
+        const response = await attendanceSessions.aggregate([
+                 {
+                    $match:{$and:[
+                        {teacher_id:Number(teacherId)},
+                        {sessionId: Number(sessionId)}
+                    ]}
+                }
+            ])
+             if(response && response.length !== 0){
+                result = {success: true}
+                return result;
+            }else{
+                result = {success: false}
+                return result
+            }
+        } catch (error) {
+             error.statusCode = 500
+            error.message = "Some thing went wrong while getting attendance session"
+            result = {success: false, msg: error}
+            return result
+        }
 }
 
-export async function attendanceSession(class_id, subject_id) {
+export async function attendanceSession(class_id, subject_id,teacher_id, session_end_at) {
     let result;
     try {
         await attendanceSessions.create(
-            {class_id, subject_id}
+            {class_id, subject_id, is_marked:false, teacher_id, session_end_at}
         )
         result={statusCode:201, success: true, msg:"Attendance session created successfully"}
     } catch (error) {
@@ -62,8 +87,8 @@ export async function attendanceSession(class_id, subject_id) {
         error.statusCode = 500
         error.message = "Some thing went wrong while creating attendance session"
         result = {success: false, msg: error}
-        return result
     }
+    return result
 }
 
 export async function studentsForAttendance(classId, session_id){
@@ -273,8 +298,24 @@ export async function classData(classId,subject_id, teacherId) {
 export async function latestSessionsData(classId, subject_id, teacherId) {
         let result;
         try {
-            const response =  await  attendanceSessions.find({class_id:classId, teacher_id:teacherId, subject_id}, {_id:0, session_date:1, sessionId:1, is_marked:1}).sort().limit(10)        
-            result = {success:true, statusCode:200, data: response}
+            const response =  await  attendanceSessions.find({class_id:classId, teacher_id:teacherId, subject_id}, {_id:0, session_date:1, sessionId:1, is_marked:1, session_end_at:1}).sort({session_date:-1}).limit(10)        
+            if(response.length == 0) return result = {success:true, statusCode:404, msg: response}
+            result = {success:true, statusCode:200, msg: response}
+        } catch (error) {
+            console.log(error)
+            error.statusCode = 500
+            error.message = "Some thing went wrong while getting attendance data"
+            result = {success: false, msg: error}
+        }
+        return result
+    }
+
+export async function sessionsDetailData(sessionId) {
+        let result;
+        try {
+            const response =  await  attendanceSessions.find({sessionId, is_marked:true}, {total_students:1, total_present_students:1})       
+            if(response.length == 0) return result = {success:true, statusCode:404, msg: "No session found"}
+            result = {success:true, statusCode:200, msg: response[0]}
         } catch (error) {
             console.log(error)
             error.statusCode = 500

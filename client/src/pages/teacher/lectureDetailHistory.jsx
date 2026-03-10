@@ -50,6 +50,8 @@ const sessionsRef = useRef(null);
     setShowSessions(!showSessions)
   }
 
+console.log("sessions detail data ",sessionDetails.msg)
+
 return (
     <>
        <div className="p-4">
@@ -75,57 +77,21 @@ return (
             headerClasses={'md:text-sm text-xs'}/>
        <Card
           title="Present Students" 
-          value={sessionDetails?.msg?.present_students} 
+          value={sessionDetails?.msg?.total_present_students} 
           className={''}
           childClasses={'text-green-500 md:text-4xl text-2xl'} 
           headerClasses={'md:text-sm text-xs'}/>
       <Card 
           title="Absent students" 
-          value={sessionDetails?.msg?.absent_students} 
+          value={(sessionDetails?.msg?.total_students - sessionDetails?.msg?.total_present_students) || 0} 
           className={''}
           childClasses={'text-red-500 md:text-4xl text-2xl'} 
           headerClasses={'md:text-sm text-xs'}/>
     
-               <motion.div
-               initial={{ opacity: 0, scaleX: 0 }}
-          animate={{ opacity: 1, scaleX: 1 }}
-          transition={{ duration: 0.25, ease: "easeOut" }} 
-               className="w-full  overflow-y-scroll p-4 col-start-1 col-end-3 md:row-start-2 row-start-5 md:row-end-4 row-end-7 min-h-72 max-h-72">
-          <table className="w-full flex flex-col justify-between bg-white rounded-lg shadow-md border border-gray-200">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr className="grid grid-cols-3">
-                <th className="md:px-6 md:py-4 px-3 py-2 text-left md:text-sm text-[0.6rem] font-semibold text-gray-700">Student</th>
-                <th className="md:px-6 md:py-4 px-3 py-2 text-left md:text-sm text-[0.6rem] font-semibold text-gray-700">Roll Number</th>
-                <th className="md:px-6 md:py-4 px-3 py-2 text-center md:text-sm text-[0.6rem] font-semibold text-gray-700">Action</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-200">
-              {sessionDetails.msg && sessionDetails.msg.student_data.map((student) => (
-                <tr key={student.id} className="hover:bg-gray-50 transition-colors grid grid-cols-3">
-                  <td className="px-3 py-2">
-                    <div className="flex items-center gap-2">
-              
-                      <span className="font-semibold text-gray-900 md:text-[0.75rem] text-[0.5rem]">{student.STUDENT_NAME}</span>
-                    </div>
-                  </td>
-                  <td className="md:px-3 px-2 md:py-2 py-1 md:text-sm text-[0.5rem] text-gray-600">{student.STUDENT_ROLLNO}</td>
-                  <td className="px-3 py-2">
-                    <div className="flex gap-2 justify-center">
-                       <span className={`inline-flex items-center rounded-full  md:px-3 px-2 md:py-2 py-1 text-[0.5rem] md:text-xs font-medium ${student.status === "absent"?'bg-red-100 text-red-700 ring-1 ring-red-300': 'bg-green-100 text-green-700 ring-1 ring-green-300'} w-fit`}>
-        {student.status === "absent"? "Absent": "Present"}
-      </span>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              </tbody>
-          </table>
-     </motion.div>
-    
       <DonutChartComponent  
 
             val1={["Present students", "Absent students"]}
-            val2={[sessionDetails?.msg?.present_students, sessionDetails?.msg?.absent_students]}
+            val2={[sessionDetails?.msg?.total_present_students, sessionDetails?.msg?.total_present_students]}
              Bgs={[
                     'rgba(75, 192, 192, 0.5)',
                     'rgba(255, 99, 132, 0.5)'  
@@ -152,7 +118,6 @@ return (
               <tr>
                 <th className="px-4 py-1 text-left text-[0.75rem] font-semibold text-gray-700 ">Id</th>
                 <th className="px-4 py-1 text-left text-[0.75rem] font-semibold text-gray-700">Date</th>
-                <th className="px-4 py-1 text-left text-[0.75rem] font-semibold text-gray-700">Subject</th>
                 <th className="px-4 py-1 text-center text-[0.75rem] font-semibold text-gray-700">Action</th>
               </tr>
             </thead>
@@ -160,16 +125,15 @@ return (
             <tbody className="divide-y divide-gray-200">
               
                   {sessions.data && sessions.data?.map((student) => (
-                  <tr key={student.SESSION_ID} className={`${student.SESSION_ID === selectedSessionId? "bg-[#2563EB] text-white": "hover:bg-gray-50 "} transition-colors  gap-3`}>
-                  <td className={`px-3 py-2 text-[0.75rem] ${student.SESSION_ID === selectedSessionId? "text-white": "text-gray-600"}`}>{student.SESSION_ID}</td>
-                  <td className={`px-3 py-2 text-[0.75rem] ${student.SESSION_ID === selectedSessionId? "text-white": "text-gray-600"}`}>{new Date(student.SESSION_DATE).toLocaleDateString('en-GB')}</td>
-                  <td className={`px-3 py-2 text-[0.75rem] ${student.SESSION_ID === selectedSessionId? "text-white": "text-gray-600"}`}>{student.SUBJECT}</td>
+                  <tr key={student.sessionId} className={`${student.sessionId === selectedSessionId? "bg-[#2563EB] text-white": "hover:bg-gray-50 "} transition-colors  gap-3`}>
+                  <td className={`px-3 py-2 text-[0.75rem] ${student.sessionId === selectedSessionId? "text-white": "text-gray-600"}`}>{student.sessionId}</td>
+                  <td className={`px-3 py-2 text-[0.75rem] ${student.sessionId === selectedSessionId? "text-white": "text-gray-600"}`}>{new Date(student.session_date).toLocaleDateString('en-GB')}</td>
              
                   <td className="px-4 py-1 text-[0.75rem]">
                     <div className="flex gap-1 justify-center">
-                     {student.SESSION_ID === selectedSessionId?
+                     {student.sessionId === selectedSessionId?
                         "":(<button 
-                      onClick={()=>handleFetchSession(student.SESSION_ID)}
+                      onClick={()=>handleFetchSession(student.sessionId)}
                       className="px-2 py-2 text-[0.75rem] bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
                         view
                       </button>)

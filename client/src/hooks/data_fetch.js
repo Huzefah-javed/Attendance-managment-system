@@ -7,13 +7,12 @@ import { useState } from "react"
     const [error, setError] = useState(null)
     const [msg, setMsg] = useState("")
     
-
     async function gettingData(...args){
         try {
             setLoading(true)
             const result = await fetchApiFn(...args);
-            console.log(result)
-            if (result.status == 200) {
+            console.log("Result : ",result)
+            if (result.status == 200 || result.statusCode == 200) {
                 setMsg(result?.msg || "request successful");
                 setLoading(false);
                 setError(null);

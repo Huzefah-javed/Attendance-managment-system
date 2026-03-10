@@ -5,8 +5,8 @@ export async function teacherLogin({email, password}){
     return res.data
 }
 
-export async function createLecSession(data){
-   const res = await api.post("teacher/create-session", data) 
+export async function createLecSession(data, classId, subjectId){
+   const res = await api.post("teacher/createSession", {data, classId, subjectId}) 
    return res.data  
 }
 
@@ -20,8 +20,10 @@ export async function markingAttendance(...args){
    return response.data
 }
 
-export async function latestSessionHistory(){
-   const response = await api.get("/teacher/latest-sessions-history")
+export async function latestSessionHistory(args){
+   const classId = args[0]
+   const subjectId = args[1]
+   const response = await api.get(`/teacher/latest-sessions-history/${classId}/${subjectId}`)
    return response.data
 }
 
@@ -33,7 +35,7 @@ export async function sessionHistory(args){
 }
 
 export async function sessionHistoryDetails(...args){
-   const response = await api.post("/teacher/sessions-history/details", {sessionId: args[0]})
+   const response = await api.post("/teacher/sessions-history", {sessionId: args[0]})
    return response.data
 }
 
