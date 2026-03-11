@@ -43,7 +43,7 @@ export async function gettingStudentForAttendance(req, res, next) {
         if(validation?.msg){return next(validation.msg)}
         else{return res.status(404).json({statusCode:404, msg:"Class id not found or invalid class id"})}
       }
-       const response = await studentsForAttendance(classId, sessionId)
+       const response = await studentsForAttendance(classId, sessionId, skip)
        if (response.success){
             res.json(response)
        }else{
@@ -52,14 +52,15 @@ export async function gettingStudentForAttendance(req, res, next) {
 }
 
 export async function markingStudentAttendance(req, res, next) {
-     const { sessionId, studIdArr } = req.body;
+     const { sessionId, presentStudArr, totalStuds } = req.body;
+     console.log(req.body)
     //! ZOd validation here ....
        const validation = await validateSessionId(sessionId, req.user.id)
         if(!validation.success){
         if(validation?.msg){return next(validation.msg)}
         else{return res.status(404).json({statusCode:404, msg:"session not found or already marked"})}
       }
-       const response = await markAttendance(sessionId, studIdArr)
+       const response = await markAttendance(sessionId, presentStudArr, totalStuds)
        if (response.success){
             res.json(response)
        }else{
@@ -95,13 +96,14 @@ export async function getSingleClassData(req, res, next) {
 
 export async function latestSessionHistory(req, res, next) {
     const { class_id, subject_id } = req.params
+    const { skip=0 } = req.query
     const validation = await validateTeacherClass(Number(class_id), req.user.id)
     if(!validation.success){
         if(validation?.msg){return next(validation.msg)}
         else{return res.status(404).json({statusCode:404, msg:"Class id not found or invalid class id"})}
       }
 
-       const response = await latestSessionsData(Number(class_id), Number(subject_id),req.user.id)
+       const response = await latestSessionsData(Number(class_id), Number(subject_id),req.user.id, Number(skip))
        if (response.success){
             res.json(response)
        }else{

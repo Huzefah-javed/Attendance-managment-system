@@ -105,12 +105,12 @@ export async function studentsForAttendance(classId, session_id){
             return result;
         }
         
-        const students_data = await students.find({ class_id }, {name:1, roll_number:1, _id:0});
+        const students_data = await students.find({ class_id }, {id:1, name:1, roll_number:1, _id:0});
         result = {
                      statusCode:200,
                       success:true , 
                       session_id: response.sessionId,
-                      students_data
+                      msg: students_data
                     }
         return result
 
@@ -151,21 +151,25 @@ export async function validateSessionId(session_id, teacher_id){
             }
     }
 
-export async function markAttendance(session_id, studIdArr) {
+export async function markAttendance(session_id, presentStudArr=[], totalStuds) {
         let result;
         try {
-          const attendance = studIdArr.map((data)=>{
-                return {
-                    ...data,
-                    session_id
-                }
-            })
-            await attendanceData.insertMany(attendance);
+            if (presentStudArr.length != 0) {   
+                const attendance = presentStudArr.map((data)=>{
+                    return {
+                       studentId: data,
+                        session_id,
+                        status: "present"
+                    }
+                })
+                await attendanceData.insertMany(attendance);
+            }
             await attendanceSessions.updateOne(
                 {sessionId: session_id},
                 {
                     is_marked:true,
-                    total_present_students:attendance.length
+                    total_present_students: presentStudArr.length,
+                    total_students:totalStuds
                 }
             )
             result={statusCode:201, success: true, msg:"Attendance marked successfully"}
@@ -295,10 +299,10 @@ export async function classData(classId,subject_id, teacherId) {
         }
     }
 
-export async function latestSessionsData(classId, subject_id, teacherId) {
+export async function latestSessionsData(classId, subject_id, teacherId, skip) {
         let result;
         try {
-            const response =  await  attendanceSessions.find({class_id:classId, teacher_id:teacherId, subject_id}, {_id:0, session_date:1, sessionId:1, is_marked:1, session_end_at:1}).sort({session_date:-1}).limit(10)        
+            const response =  await  attendanceSessions.find({class_id:classId, teacher_id:teacherId, subject_id}, {_id:0, session_date:1, sessionId:1, is_marked:1, session_end_at:1}).sort({session_date:-1}).limit(10).skip(skip*10)       
             if(response.length == 0) return result = {success:true, statusCode:404, msg: response}
             result = {success:true, statusCode:200, msg: response}
         } catch (error) {

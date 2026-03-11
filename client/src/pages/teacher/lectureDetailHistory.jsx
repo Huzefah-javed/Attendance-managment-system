@@ -42,7 +42,7 @@ const sessionsRef = useRef(null);
     }else {
       chosenPage = page -1
     }
-    await sessions.refetch([chosenPage])
+    await sessions.refetch([classId, subjectId, chosenPage])
     setPage(chosenPage)
   }
 
@@ -91,7 +91,7 @@ return (
       <DonutChartComponent  
 
             val1={["Present students", "Absent students"]}
-            val2={[sessionDetails?.msg?.total_present_students, sessionDetails?.msg?.total_present_students]}
+            val2={[sessionDetails?.msg?.total_present_students, (sessionDetails?.msg?.total_students - sessionDetails?.msg?.total_present_students)]}
              Bgs={[
                     'rgba(75, 192, 192, 0.5)',
                     'rgba(255, 99, 132, 0.5)'  

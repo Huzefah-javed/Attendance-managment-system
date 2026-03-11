@@ -45,7 +45,7 @@ if (error || fetch.error) {
 }
 
 function handleStudentForAttendance(sessionId){
-    studentsForAttendance.gettingData(sessionId)
+    studentsForAttendance.gettingData(classId, sessionId)
     setSessionId(sessionId)
 }
 
@@ -81,7 +81,6 @@ function handleCloseAttendancePage(){
           className="h-[80%]  flex flex-col justify-evenly" onSubmit={(e)=>handleFormSubmit(e)}>
           <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 sm:gap-6">
 
-          {/* End Time */}
         <div className="space-y-2">
   <label className="block text-sm font-medium text-gray-700">
     Session Time Length
