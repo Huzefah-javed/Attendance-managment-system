@@ -6,14 +6,6 @@ export default function LoginForm({ handleLogin, children }) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8 space-y-8">
-        {/* Logo / Branding */}
-        <div className="flex justify-center">
-          <img
-            src="logo.jpeg"
-            alt="Logo"
-            className="h-16 w-16 object-contain"
-          />
-        </div>
 
         {/* Heading */}
         <div className="text-center">

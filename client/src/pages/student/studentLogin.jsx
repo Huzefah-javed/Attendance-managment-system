@@ -6,12 +6,14 @@ import { Link, redirect, Router, useNavigate } from "react-router-dom"
 import { useDispatch } from 'react-redux'
 import { addAuthData } from "../../store"
 
-export function LoginPage(){
+export function StudentLogin(){
   const [data, setData] = useState({
      rollNo:"", password:""
   })
   const dispatch = useDispatch()
 const navigate = useNavigate()
+
+  console.log("we are on the student login")
 
   async function handleLogin(e){
     e.preventDefault()
@@ -19,8 +21,6 @@ const navigate = useNavigate()
     if(data.password && data.rollNo){
    const authData = await studentLogin({rollNo: data.rollNo, password: data.password})
    console.log(authData)
-      dispatch(addAuthData(authData.msg))
-      navigate("/student/todaysLectureAttendance")
     }
     setData({
      rollNo:"", password:""
@@ -42,7 +42,7 @@ const navigate = useNavigate()
       </span>
     
       <Link
-        to="/teacherLogin" 
+        to="/teacher-login" 
         className="
           text-indigo-600           
           hover:text-indigo-800

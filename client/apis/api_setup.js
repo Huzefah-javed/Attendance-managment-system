@@ -7,7 +7,7 @@ const api = axios.create({
 
 export async function getAuthData(){
     const res = await api.get("/auth/me")
-    return res.data
+    return res.status
 }
 
 export default api

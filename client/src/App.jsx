@@ -1,20 +1,20 @@
 import Sidebar from "./components/sidebar"
 import AdminSessions from "./pages/teacher/LectureSession"
-import AdminLogin from "./pages/teacher/adminLogin"
 import UserInfo from "./components/user_info"
 import LectureDetailHistory from "./pages/teacher/lectureDetailHistory"
-import { LoginPage } from "./pages/student/studentLogin"
+import { StudentLogin } from "./pages/student/studentLogin"
 import { CurrentStudentAttendance } from "./pages/student/currentAttendance"
 import { AttendanceHistory } from "./pages/student/attendanceHsitory"
-import { createBrowserRouter, RouterProvider } from "react-router-dom"
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom"
 import { useSelector } from "react-redux"
-import { Structure } from "./pages/outlet"
-import { ProtectionLayer } from "./pages/protection"
+import { Structure } from "./utility/outlet"
+import { ProtectionLayer } from "./utility/protection"
 import { TeacherHome } from "./pages/teacher/Home"
 import { ClassDetail } from "./pages/teacher/ClassDetail"
+import TeacherLogin from "./pages/teacher/teacherLogin"
+import { LoginRedirection } from "./utility/loginRedirect"
 
 function App (){
-  const authData = useSelector(state => state.authInfo)
   
 const router = createBrowserRouter([
     {
@@ -45,8 +45,16 @@ const router = createBrowserRouter([
     ]
   },
 
-  { path: "/", element: <LoginPage /> },
-  { path: "/teacherLogin", element: <AdminLogin /> }
+  { 
+    path: "/", 
+    element:<LoginRedirection/>,
+    children:[
+      { path: "/teacher-login", element: <TeacherLogin /> },
+      { path: "/student-login", element: <StudentLogin /> },
+      // { path: "/Department-head-Login", element: <DepartmentalHeadLogin /> },
+      // { path: "/admin-head-Login", element: <AdminLogin /> },
+    ]
+   },
 
 
 ])

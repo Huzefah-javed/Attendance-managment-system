@@ -3,6 +3,7 @@ import { getAuthData } from "../../apis/api_setup"
 import { addAuthData } from "../store"
 import { Navigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Loader from "../components/Loader";
 
 export function ProtectionLayer({children, authRole}){
 
@@ -26,7 +27,7 @@ export function ProtectionLayer({children, authRole}){
             },[authData.name, authData.role])
             
             if (loading) {
-              return <div>Loading...</div>;
+              return <Loader/>;
             }
             if (authData.name && authData.role === authRole) {
               return children

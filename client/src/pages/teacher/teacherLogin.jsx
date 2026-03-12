@@ -6,26 +6,21 @@ import { Link, useNavigate } from "react-router-dom";
 import { addAuthData } from "../../store";
 import { useDispatch } from "react-redux";
 
-export default function AdminLogin(){
+export default function TeacherLogin(){
   const [data, setData] = useState({
     email:"", password:""
   })
 
-const dispatch = useDispatch()
 const navigate = useNavigate()
 
   async function handleLogin(e){
     e.preventDefault()
      console.log(data)
         if(data.password && data.email){
-        const authData = await teacherLogin({email: data.email, password: data.password})
-        console.log(authData)
-        if (authData.status == 200) {
-          dispatch(addAuthData(authData.msg))
-          navigate("/teacher/assignClasses")
-          }
-        }
-        
+        const resData = await teacherLogin({email: data.email, password: data.password})
+        console.log(resData)
+        navigate("/")
+        }        
         setData({
          rollNo:"", password:""
       })
@@ -45,7 +40,7 @@ const navigate = useNavigate()
       </span>
     
       <Link
-        to="/" 
+        to="/student-login" 
         className="
           text-indigo-600           
           hover:text-indigo-800

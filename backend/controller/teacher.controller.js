@@ -43,7 +43,7 @@ export async function gettingStudentForAttendance(req, res, next) {
         if(validation?.msg){return next(validation.msg)}
         else{return res.status(404).json({statusCode:404, msg:"Class id not found or invalid class id"})}
       }
-       const response = await studentsForAttendance(classId, sessionId, skip)
+       const response = await studentsForAttendance(classId, sessionId)
        if (response.success){
             res.json(response)
        }else{
