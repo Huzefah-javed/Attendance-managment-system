@@ -6,7 +6,7 @@ import { getAuthData } from "../../apis/api_setup";
 import { useState } from "react";
 import Loader from "../components/Loader";
 
-export function LoginRedirection({children}){
+export function LoginRedirection(){
     
 
   const [loading, setLoading] = useState(true);    
@@ -31,6 +31,7 @@ useEffect(()=>{
 
     useEffect(()=>{
         if (loading) return;
+        console.log("here is the shit ", authData)
         if (authData.role === "teacher") {
         navigate("/teacher/assignClasses")    
     }else if(authData.role === "departmental_admin"){

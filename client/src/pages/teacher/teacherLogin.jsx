@@ -19,7 +19,7 @@ const navigate = useNavigate()
         if(data.password && data.email){
         const resData = await teacherLogin({email: data.email, password: data.password})
         console.log(resData)
-        navigate("/")
+        navigate("/teacher/assignClasses")
         }        
         setData({
          rollNo:"", password:""
