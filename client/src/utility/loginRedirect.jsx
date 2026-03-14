@@ -35,7 +35,7 @@ useEffect(()=>{
         if (authData.role === "teacher") {
         navigate("/teacher/assignClasses")    
     }else if(authData.role === "departmental_admin"){
-        navigate("/departmental-admin/main")    
+        navigate("/departmental-admin/classes")    
     }else if(authData.role === "super_admin"){
         navigate("/super-admin/main")    
     }else{

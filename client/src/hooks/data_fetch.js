@@ -11,7 +11,6 @@ import { useState } from "react"
         try {
             setLoading(true)
             const result = await fetchApiFn(...args);
-            console.log("Result : ",result)
             if (result.status == 200 || result.statusCode == 200) {
                 setMsg(result?.msg || "request successful");
                 setLoading(false);

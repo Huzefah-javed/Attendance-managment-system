@@ -1,46 +1,37 @@
-import { useCallback, useState } from "react"
+import { Link } from "react-router-dom"
+import { EmailField, PasswordField, SubmitBtn } from "../../components/inputFields"
 import LoginForm from "../../components/LoginForm"
-import { PasswordField, RollNoField, SubmitBtn } from "../../components/inputFields"
-import { studentLogin } from "../../../apis/student_api"
-import { Link, redirect, Router, useNavigate } from "react-router-dom"
-import { useDispatch } from 'react-redux'
-import { addAuthData } from "../../store"
+import { useState } from "react"
+import { departmentHeadLogin } from "../../../apis/departmentHead_api"
 
-export function StudentLogin(){
-  const [data, setData] = useState({
-     rollNo:"", password:""
+export function DepartmentalAdminLogin(){
+    const [data, setData] = useState({
+     email:"", password:""
   })
-  const dispatch = useDispatch()
-const navigate = useNavigate()
-
-  console.log("we are on the student login")
 
   async function handleLogin(e){
     e.preventDefault()
-    console.log(data)
-    if(data.password && data.rollNo){
-   const authData = await studentLogin({rollNo: data.rollNo, password: data.password})
+    if(data.password && data.email){
+   const authData = await departmentHeadLogin({email: data.email, password: data.password})
    console.log(authData)
     }
     setData({
-     rollNo:"", password:""
+     email:"", password:""
   })
   }
 
   return(
     <>
       <LoginForm handleLogin={handleLogin}>
-           <RollNoField  onChangeData={setData} value={data.rollNo}/>
+           <EmailField  onChangeData={setData} value={data.email}/>
            <PasswordField onChangeData={setData} value={data.password}/>
            <SubmitBtn />
     
-           <div className="text-center p-1 flex flex-col gap-1">
+           <div className="text-center p-1">
       
       {/* Descriptive text */}
-      <div>
-
       <span className="text-gray-600 mr-2 sm:mr-4 text-sm sm:text-base">
-        Or Login as teacher:
+        Or Login as teacher :
       </span>
     
       <Link
@@ -58,16 +49,12 @@ const navigate = useNavigate()
       >
         Teacher
       </Link>
-      </div>
-
-<div>
 
       <span className="text-gray-600 mr-2 sm:mr-4 text-sm sm:text-base">
-        Or Login as department head :
+        Or Login as student :
       </span>
-    
       <Link
-        to="/department-head-Login" 
+        to="/student-login" 
         className="
           text-indigo-600           
           hover:text-indigo-800
@@ -79,9 +66,8 @@ const navigate = useNavigate()
           pb-0.5                      
         "
       >
-        Department head
+        Student
       </Link>
-</div>
     </div>
       </LoginForm>
     </>

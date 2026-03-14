@@ -1,4 +1,4 @@
-import { assigningTeacher, creatingClass, departmentClassValidation, departmentConfirmation, registeringStudent, registeringTeacher, subjectAssigningToClass } from "../db/model/hod.model.js"
+import { assigningTeacher, classesData, creatingClass, departmentClassValidation, departmentConfirmation, registeringStudent, registeringTeacher, subjectAssigningToClass } from "../db/model/hod.model.js"
 
 
 export async function createClass(req, res, next) {
@@ -11,6 +11,16 @@ export async function createClass(req, res, next) {
           }
 
           const response = await creatingClass(class_name, department_id)
+           if (response.success){
+            res.json(response)
+       }else{
+           next(response.msg) 
+       }
+
+      }
+export async function getClasses(req, res, next) {
+
+   const response = await classesData(req.user.id)
            if (response.success){
             res.json(response)
        }else{

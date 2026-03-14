@@ -44,6 +44,43 @@ export async function creatingClass(class_name, department_id) {
     return result
 }
 
+export async function classesData(hod_id) {
+    let result;
+    try {
+      const data =  await department.aggregate([
+            {
+                $match:{
+                    hod_id 
+                }
+            },
+            {
+                $lookup:{
+                    from:'classes',
+                    foreignField:'department_id',
+                    localField:'department_id',
+                    as:'classes'
+                }
+            },
+            {
+                $project:{
+                    _id:0,
+                    institution_id:0,
+                    hod_id:0,
+                    department_id:0,
+                    'classes._id':0,
+                    'classes.department_id':0
+                }
+            }
+        ])
+        result={success: true, statusCode: 200, msg:data[0]}
+    } catch (error) {
+        error.statusCode = 500
+        error.msg = "Error: cannot saved this document or database connection"
+        result={success: false, msg: error}
+    }
+    return result
+}
+
 export async function departmentClassValidation(class_id, hod_id) {
     let result;
     try {

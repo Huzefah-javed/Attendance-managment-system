@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken"
 import { assignJWTCookie } from "../jwt/cookie.jwt.js";
-import { getSuperAdminWithSession, getTeacherWithSession } from "../db/model/login.sessions.js";
+import { getDepartmentAdminWithSession, getSuperAdminWithSession, getTeacherWithSession } from "../db/model/login.sessions.js";
 
 async function roleFinder(id, role){
     let data;
         if(role === "super_admin") data = await getSuperAdminWithSession({id, role})
-            // if(role === "department_admin") data = await getDepartmentAdminWithSession({id, role})
+            if(role === "departmental_admin") data = await getDepartmentAdminWithSession({id, role})
                 if(role === "teacher") data = await getTeacherWithSession({id, role})
                     // if(role === "student") data = await getStudentWithSession({id, role})
                         return data;
@@ -31,6 +31,7 @@ export async function cookieVerification(req, res, next){
             try {
                 const token = jwt.verify(sessionalCookie, process.env.JWT_SECRET)
                 const response = await roleFinder(token.id, token.role)  
+                console.log("hy there: ",response)
                     if (response.success) {
                         console.log("rrrr ",response)
                         const { id, name, email, role } = response.data

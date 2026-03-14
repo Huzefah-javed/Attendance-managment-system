@@ -13,6 +13,8 @@ import { TeacherHome } from "./pages/teacher/Home"
 import { ClassDetail } from "./pages/teacher/ClassDetail"
 import TeacherLogin from "./pages/teacher/teacherLogin"
 import { LoginRedirection } from "./utility/loginRedirect"
+import { DepartmentalAdminLogin } from "./pages/department_admin/departmentalAdminLogin"
+import { ClassesData } from "./pages/department_admin/ClassesData"
 
 function App (){
   
@@ -44,6 +46,18 @@ const router = createBrowserRouter([
       { path: "/student/attendanceDetail", element: <AttendanceHistory /> }
     ]
   },
+  {
+    path: "/departmental-admin",
+    element: (
+      <ProtectionLayer authRole="departmental_admin">
+        <Structure sideMenu={["todaysLectureAttendance", "attendanceDetail"]} />
+      </ProtectionLayer>
+    ),
+    children: [
+      { path: "/departmental-admin/classes", element: <ClassesData /> },
+      // { path: "/departmental-admin/attendanceDetail", element: <AttendanceHistory /> }
+    ]
+  },
 
   { 
     path: "/", 
@@ -51,7 +65,7 @@ const router = createBrowserRouter([
     children:[
       { path: "/teacher-login", element: <TeacherLogin /> },
       { path: "/student-login", element: <StudentLogin /> },
-      // { path: "/Department-head-Login", element: <DepartmentalHeadLogin /> },
+      { path: "/department-head-Login", element: <DepartmentalAdminLogin /> },
       // { path: "/admin-head-Login", element: <AdminLogin /> },
     ]
    },

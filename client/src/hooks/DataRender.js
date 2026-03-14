@@ -11,7 +11,6 @@ const dataFetch = useCallback(async(argument = args)=>{
     setLoading(true)
 try {
     const res = (argument.length > 0)? await fetchFn(argument) : await fetchFn();
-    
         if (res.status === 200||res.status === 201 || res.success) {
             setData(res.msg)
         }
