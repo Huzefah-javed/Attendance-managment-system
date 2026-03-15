@@ -15,6 +15,7 @@ import TeacherLogin from "./pages/teacher/teacherLogin"
 import { LoginRedirection } from "./utility/loginRedirect"
 import { DepartmentalAdminLogin } from "./pages/department_admin/departmentalAdminLogin"
 import { ClassesData } from "./pages/department_admin/ClassesData"
+import CreateClass from "./pages/department_admin/ClassCreation"
 
 function App (){
   
@@ -55,8 +56,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: "/departmental-admin/classes", element: <ClassesData /> },
-      // { path: "/departmental-admin/attendanceDetail", element: <AttendanceHistory /> }
-    ]
+      ]
   },
 
   { 

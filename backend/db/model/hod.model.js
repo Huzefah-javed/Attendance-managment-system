@@ -28,6 +28,21 @@ export async function departmentConfirmation(department_id, hod_id) {
         }
 }
 
+export async function getDepIdByHodId(hod_id) {
+    let result;
+    try {
+            const response = await department.findOne({
+                hod_id
+            })
+            result ={success:true, id: response.department_id}
+        } catch (error) {
+            error.statusCode = 500
+            error.message = "Some thing went wrong while authenticating department"
+            result = {success: false, msg: error}
+        }
+        return result
+}
+
 
 export async function creatingClass(class_name, department_id) {
     let result;
@@ -68,7 +83,9 @@ export async function classesData(hod_id) {
                     hod_id:0,
                     department_id:0,
                     'classes._id':0,
-                    'classes.department_id':0
+                    'classes.department_id':0,
+                    'subjects._id':0,
+                    'subjects.subject_id':0,
                 }
             }
         ])
@@ -80,6 +97,57 @@ export async function classesData(hod_id) {
     }
     return result
 }
+
+export async function classesDetails(class_id) {
+    let result;
+    try {
+      const data =  await classesSubjects.aggregate([
+            {
+                $match:{
+                    class_id
+                }
+            },
+            {
+                $lookup:{
+                    from:'teachers',
+                    foreignField:'id',
+                    localField:'teaches_by',
+                    as:'teacher'
+                }
+            },
+            { 
+            $unwind: {
+            path: "$teacher",
+            preserveNullAndEmptyArrays: true 
+            }
+        },
+            {
+                $project:{
+                    _id:0,
+                    institution_id:0,
+                    hod_id:0,
+                    department_id:0,
+                    class_id:0,
+                    subject_id:0,
+                    teaches_by:0,
+                    "teacher.password":0,
+                    "teacher._id":0,
+                    "teacher.id":0,
+                    "teacher.department_id":0,
+                    "teacher.role":0,
+                }
+            }
+        ])
+        result={success: true, statusCode: 200, msg:data}
+    } catch (error) {
+        error.statusCode = 500
+        error.msg = "Error: cannot saved this document or database connection"
+        result={success: false, msg: error}
+    }
+    return result
+}
+
+
 
 export async function departmentClassValidation(class_id, hod_id) {
     let result;
