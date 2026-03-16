@@ -16,6 +16,7 @@ import { LoginRedirection } from "./utility/loginRedirect"
 import { DepartmentalAdminLogin } from "./pages/department_admin/departmentalAdminLogin"
 import { ClassesData } from "./pages/department_admin/ClassesData"
 import CreateClass from "./pages/department_admin/ClassCreation"
+import { ManageClasses } from "./pages/department_admin/ManageClasses"
 
 function App (){
   
@@ -56,6 +57,7 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: "/departmental-admin/classes", element: <ClassesData /> },
+      { path: "/departmental-admin/create-edit-classes", element: <ManageClasses /> },
       ]
   },
 

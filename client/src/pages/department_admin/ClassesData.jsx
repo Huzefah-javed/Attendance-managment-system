@@ -28,19 +28,6 @@ const [selectedClass, setSelectedClass] = useState(null);
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         
-        {/* 1. THE "ADD NEW CLASS" BOX (First Item) */}
-        <div 
-          onClick={() => { /* Logic to go to creation page or open modal */ }}
-          className="group relative flex flex-col items-center justify-center p-6 bg-slate-50 border-2 border-dashed border-slate-200 rounded-3xl hover:border-blue-500 hover:bg-blue-50/50 transition-all cursor-pointer min-h-[220px]"
-        >
-          <div className="w-14 h-14 rounded-2xl bg-white shadow-sm border border-slate-100 flex items-center justify-center text-blue-600 text-3xl font-black group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
-            +
-          </div>
-          <p className="mt-4 text-xs font-black text-slate-400 group-hover:text-blue-600 uppercase tracking-widest">
-            Create New Class
-          </p>
-        </div>
-
         {/* 2. THE EXISTING CLASSES (Mapped from API) */}
         {data?.data?.classes?.map((cls) => (
           <div 
@@ -49,7 +36,7 @@ const [selectedClass, setSelectedClass] = useState(null);
           >
             <div className="flex justify-between items-start mb-6">
               <div className="h-10 w-10 bg-slate-100 rounded-xl flex items-center justify-center font-bold text-slate-400">
-                ID
+               ID: {cls.class_id}
               </div>
               <span className="text-[10px] font-black bg-green-100 text-green-700 px-3 py-1 rounded-full uppercase">
                 Active
@@ -59,9 +46,6 @@ const [selectedClass, setSelectedClass] = useState(null);
             <h3 className="text-xl font-black text-slate-800 mb-1 leading-tight group-hover:text-blue-600 transition-colors">
               {cls.class_name}
             </h3>
-            <p className="text-xs font-bold text-slate-400 uppercase tracking-tighter">
-              Semester Tracking Enabled
-            </p>
             
             <button 
               onClick={() => setSelectedClass(cls)}
