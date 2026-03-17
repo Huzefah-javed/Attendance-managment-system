@@ -5,7 +5,7 @@ import { useState } from "react"
     
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    const [msg, setMsg] = useState("")
+    const [msg, setMsg] = useState(null)
     
     async function gettingData(...args){
         try {

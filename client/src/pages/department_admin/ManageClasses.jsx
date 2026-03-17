@@ -3,12 +3,14 @@ import { getClassesData, getClassesDetailData } from '../../../apis/departmentHe
 import dataRender from '../../hooks/DataRender';
 import Loader from '../../components/Loader';
 import { useFetchData } from '../../hooks/data_fetch';
+import { SubjectEditModal } from '../../components/SubjectEditModal';
 
 export const ManageClasses = () => {
     
     const data = dataRender(getClassesData, [])
     const classData = useFetchData(getClassesDetailData)
   const [selectedClass, setSelectedClass] = useState(null);
+  const [editClass, setEditClass] = useState(null);
   
 if (data.loading || classData.loading) {
     return <Loader/>
@@ -24,6 +26,10 @@ if (data.loading || classData.loading) {
     await classData.gettingData(cls.class_id)
   };
   
+const handleSubjectView=(sub)=>{
+      setEditClass(sub)
+}
+
  return (
     // Fixed: h-screen on desktop, auto on mobile to allow scrolling
     <div className="flex flex-col md:flex-row h-screen bg-slate-50 overflow-hidden font-sans">
@@ -82,58 +88,81 @@ if (data.loading || classData.loading) {
       </div>
 
       <div className="flex-1 flex flex-col overflow-y-auto bg-slate-50">
-        
-        <div className="p-4 md:p-8 bg-white/80 backdrop-blur-md border-b border-slate-200 flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center sticky top-0 z-10">
-          <div>
-            <h1 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight">Manage Subjects</h1>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest"></p>
-          </div>
-          <div className="flex w-full sm:w-auto gap-2">
-             <button className="flex-1 sm:flex-none px-4 py-2 bg-white border border-slate-200 text-slate-500 text-[9px] font-black rounded-xl uppercase tracking-widest">Discard</button>
-             <button className="flex-1 sm:flex-none px-4 py-2 bg-slate-900 text-white text-[9px] font-black rounded-xl shadow-lg uppercase tracking-widest">Save</button>
-          </div>
+  {/* Sticky Header with Actions */}
+  <div className="p-4 md:p-8 bg-white/80 backdrop-blur-md border-b border-slate-200 flex justify-between items-center sticky top-0 z-10">
+    <h1 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight">Management Console</h1>
+    <div className="flex gap-2">
+      <button className="px-4 py-2 bg-slate-900 text-white text-[10px] font-black rounded-xl shadow-lg uppercase tracking-widest">
+        Push Updates
+      </button>
+    </div>
+  </div>
+
+  <div className="p-4 md:p-8 space-y-10">
+    {/* --- SECTION 1: CLASS IDENTITY --- */}
+    <div className="bg-white rounded-[2rem] p-6 md:p-8 border border-slate-200 shadow-sm">
+      <label className="text-[10px] font-black text-blue-600 uppercase tracking-[0.2em] mb-4 block">Class Identity</label>
+      <div className="flex flex-col sm:flex-row gap-4">
+        <input 
+          type="text" 
+          value={selectedClass?.class_name}
+          placeholder="Enter Class Name"
+          className="flex-1 bg-slate-50 p-4 rounded-2xl border border-slate-100 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/10" 
+        />
+        <button
+
+         className="px-8 py-4 bg-blue-600 text-white text-xs font-black rounded-2xl hover:bg-blue-700 transition-all shadow-md uppercase tracking-widest">
+          Rename Class
+        </button>
+      </div>
+    </div>
+
+    {/* --- SECTION 2: SUBJECTS LIST --- */}
+    <div className="space-y-4">
+      <div className="flex justify-between items-center px-2">
+        <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest">Manage Subjects</h2>
+        <span className="text-[10px] font-bold bg-slate-200 px-2 py-1 rounded-md">Total: {classData?.msg?.length}</span>
+      </div>
+          {
+           classData?.msg?.map((sub)=>{
+            return(
+
+              <div 
+              onClick={() => {handleSubjectView(sub)}}
+              className="group bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:border-blue-400 cursor-pointer transition-all flex justify-between items-center"
+              >
+        <div>
+          <p className="text-sm font-black text-slate-800 group-hover:text-blue-600 transition-colors uppercase italic">
+            {sub?.subject_name}
+          </p>
+          <p className="text-[10px] font-bold text-slate-400 mt-1 uppercase">
+            Teacher: <span className="text-slate-600">{sub?.teacher?.name}</span>
+          </p>
         </div>
-
-        <div className="p-4 md:p-8 space-y-6">
-          
-          <div className="bg-white rounded-[2rem] p-5 md:p-8 border border-slate-200 shadow-sm">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 items-start">
-              <div className="space-y-3">
-                <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Subject Name</label>
-                <input type="text" className="w-full bg-slate-50 p-3 md:p-4 rounded-xl border border-slate-100 font-bold text-slate-800 text-sm md:text-base italic focus:outline-none" defaultValue="Introduction to Web Development" />
-              </div>
-
-              <div className="p-5 bg-emerald-50/30 border border-emerald-100 rounded-2xl">
-                <label className="text-[9px] font-black text-emerald-600 uppercase tracking-widest block mb-2">Assigned Teacher</label>
-                <div className="flex items-center justify-between gap-2">
-                   <div className="min-w-0">
-                      <p className="text-xs md:text-sm font-black text-slate-800 truncate">Miss Ayesha</p>
-                      <p className="text-[10px] font-bold text-slate-400 truncate tracking-tight">ayesha@university.edu</p>
-                   </div>
-                   <button className="text-[9px] font-black text-blue-600 uppercase flex-shrink-0">Change</button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-white rounded-[2rem] p-5 md:p-8 border border-slate-200 border-l-4 border-l-amber-400 shadow-sm">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
-              <div className="space-y-3">
-                <label className="text-[9px] font-black text-slate-400 uppercase tracking-widest block">Subject Name</label>
-                <input type="text" className="w-full bg-slate-50 p-3 md:p-4 rounded-xl border border-slate-100 font-bold text-slate-800 text-sm italic focus:outline-none" defaultValue="Web Styling (CSS)" />
-              </div>
-
-              <div className="p-5 bg-slate-50 border-2 border-dashed border-slate-200 rounded-2xl text-center">
-                <p className="text-[9px] font-black text-amber-600 uppercase mb-2">! Faculty Required</p>
-                <button className="w-full py-2 bg-blue-600 text-white text-[9px] font-black rounded-lg uppercase tracking-widest">
-                  Browse Teachers
-                </button>
-              </div>
-            </div>
-          </div>
-
+        <div className="h-10 w-10 rounded-full bg-slate-50 flex items-center justify-center text-slate-400 group-hover:bg-blue-50 group-hover:text-blue-600 transition-all">
+          <span className="text-xl">→</span>
         </div>
       </div>
+
+)
+})
+}
+      <button 
+      onClick={() => {handleSubjectView(sub)}}
+      className="w-full py-6 border-2 border-dashed border-slate-200 rounded-[2rem] text-slate-400 font-black text-xs uppercase tracking-[0.3em] hover:bg-white hover:border-blue-400 hover:text-blue-500 transition-all"
+      >
+        + Add Subject to this class
+      </button>
+    </div>
+  </div>
+  </div>
+  
+  {
+    editClass &&
+    <SubjectEditModal
+    onClose={()=>setEditClass(false)}
+    subjectData={editClass}
+/>}
     </div>
   );
 };

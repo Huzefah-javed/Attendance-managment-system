@@ -11,7 +11,8 @@ export async function getClassesData(){
     return res.data
 }
 
-export async function getClassesDetailData(args){
+export async function getClassesDetailData(...args){
+    console.log("Niger ", args)
     const res = await api.post("departmentAdmin/getClassesDetails", {class_id: args[0]})
     return res.data
 }
