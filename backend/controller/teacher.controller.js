@@ -1,3 +1,4 @@
+import { getTeachersBySubject } from "../db/model/hod.model.js"
 import { attendanceSession, classData, getClasses, latestSessionsData, markAttendance, sessionsDetailData, studentsForAttendance, teacherSubjectRegistering, validateSessionId, validateTeacherClass, validateTeacherSession } from "../db/model/teacher.model.js"
 
 
@@ -120,6 +121,17 @@ export async function getSessionHistory(req, res, next) {
       }
 
        const response = await sessionsDetailData(Number(sessionId))
+       if (response.success){
+            res.json(response)
+       }else{
+           next(response.msg) 
+       }
+}
+
+export async function getAvailableTeacher(req, res, next) {
+    const { subjectName } = req.params
+    
+       const response = await getTeachersBySubject(subjectName, req.user.id)
        if (response.success){
             res.json(response)
        }else{

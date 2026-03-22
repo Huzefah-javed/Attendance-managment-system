@@ -128,7 +128,6 @@ export async function classesDetails(class_id) {
                     hod_id:0,
                     department_id:0,
                     class_id:0,
-                    subject_id:0,
                     teaches_by:0,
                     "teacher.password":0,
                     "teacher._id":0,
@@ -162,6 +161,35 @@ export async function departmentClassValidation(class_id, hod_id) {
             }},
             {$unwind:"$classesData"},
             {$match: {"classesData.class_id" : class_id}}
+        ])
+           if(response && response.length !== 0){
+                result = {success: true}
+                return result;
+            }else{
+                result = {success: false}
+                return result
+            }    
+    } catch (error) {
+        error.statusCode = 500
+        error.msg = "database connection issue"
+        result={success: false, msg: error}
+    }
+    return result
+}
+
+export async function departmentTeacherValidation(teacher_id, hod_id) {
+    let result;
+    try {
+        const response =  await department.aggregate([
+            {$match:{hod_id}},
+            {$lookup:{
+                from: "teachers",
+                foreignField:"department_id",
+                localField:"department_id",
+                as: "teachersData"
+            }},
+            {$unwind:"$teachersData"},
+            {$match: {"teachersData.id" : teacher_id}}
         ])
            if(response && response.length !== 0){
                 result = {success: true}
@@ -228,14 +256,55 @@ export async function subjectAssigningToClass(subject_name, class_id) {
         return result
     }
 
-    export async function assigningTeacher(teacher_id, class_id) {
+    export async function assigningTeacher(teacher_id, class_id, subject_id) {
         let result;
         try {
             await classesSubjects.updateOne(
-                {class_id},
+                {class_id, subject_id},
                 {teaches_by: teacher_id}
             )
             result={success: true, statusCode: 201}
+        } catch (error) {
+            console.log(error)
+            error.statusCode = 500
+            error.msg = "Error: cannot saved this document or database connection"
+            result={success: false, msg: error}
+        }
+        return result
+    }
+
+    export async function getTeachersBySubject(subjectName, hod_id) {
+        let result;
+        try {
+            const dep = await department.findOne({hod_id}, {department_id:1,})
+         const data =  await teacher.aggregate([
+                {
+                  $match: {department_id: dep.department_id}
+                },
+                {
+                $lookup:{
+                from: "teachers_subjects",
+                foreignField:"teacher_id",
+                localField:"id",
+                as: "subject"
+                }
+            },           
+            {
+                $unwind:"$subject"
+            },
+            {
+                $match: {'subject.subject_name':subjectName}
+            },
+            {
+                $project:{
+                    _id:0,
+                    teacher_id: '$id',
+                    name:1,
+                    subject:'$subject.subject_name'
+                }
+            }
+            ])
+            result={success: true, statusCode: 201, msg:data}
         } catch (error) {
             console.log(error)
             error.statusCode = 500

@@ -4,13 +4,17 @@ import dataRender from '../../hooks/DataRender';
 import Loader from '../../components/Loader';
 import { useFetchData } from '../../hooks/data_fetch';
 import { SubjectEditModal } from '../../components/SubjectEditModal';
+import { AddSubjectModal } from '../../components/AddSubjectModal';
 
 export const ManageClasses = () => {
     
     const data = dataRender(getClassesData, [])
     const classData = useFetchData(getClassesDetailData)
   const [selectedClass, setSelectedClass] = useState(null);
-  const [editClass, setEditClass] = useState(null);
+  const [options, setOptions] = useState({
+    editSubject:null,
+    addNewSub:null
+  });
   
 if (data.loading || classData.loading) {
     return <Loader/>
@@ -26,9 +30,6 @@ if (data.loading || classData.loading) {
     await classData.gettingData(cls.class_id)
   };
   
-const handleSubjectView=(sub)=>{
-      setEditClass(sub)
-}
 
  return (
     // Fixed: h-screen on desktop, auto on mobile to allow scrolling
@@ -48,6 +49,23 @@ const handleSubjectView=(sub)=>{
         
         {/* Horizontal scroll on mobile, Vertical on desktop */}
         <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto custom-scrollbar bg-white">
+
+  <div
+  onClick={() => {/* Trigger Create Class Modal */}}
+  className="
+    min-w-[200px] md:min-w-full p-6 cursor-pointer transition-all
+    /* Dashed border to signal 'empty slot' */
+    border-2 border-dashed border-slate-200 
+    /* Light blue tint */
+    bg-blue-50/30 hover:bg-blue-100 hover:border-blue-400
+    flex items-center justify-center
+    rounded-2xl md:rounded-none
+  "
+>
+  <span className="text-[11px] font-black text-blue-500 uppercase tracking-[0.2em]">
+    + Create New Class
+  </span>
+</div>
 
           {data?.data?.classes?.map((item) => (
            <div
@@ -117,7 +135,6 @@ const handleSubjectView=(sub)=>{
       </div>
     </div>
 
-    {/* --- SECTION 2: SUBJECTS LIST --- */}
     <div className="space-y-4">
       <div className="flex justify-between items-center px-2">
         <h2 className="text-sm font-black text-slate-400 uppercase tracking-widest">Manage Subjects</h2>
@@ -128,7 +145,7 @@ const handleSubjectView=(sub)=>{
             return(
 
               <div 
-              onClick={() => {handleSubjectView(sub)}}
+              onClick={() => setOptions((prev)=>({...prev, editSubject:sub}))}
               className="group bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:border-blue-400 cursor-pointer transition-all flex justify-between items-center"
               >
         <div>
@@ -143,12 +160,11 @@ const handleSubjectView=(sub)=>{
           <span className="text-xl">→</span>
         </div>
       </div>
-
 )
 })
 }
       <button 
-      onClick={() => {handleSubjectView(sub)}}
+      onClick={() => {setOptions((prev)=>({...prev, addNewSub:true}))}}
       className="w-full py-6 border-2 border-dashed border-slate-200 rounded-[2rem] text-slate-400 font-black text-xs uppercase tracking-[0.3em] hover:bg-white hover:border-blue-400 hover:text-blue-500 transition-all"
       >
         + Add Subject to this class
@@ -158,10 +174,20 @@ const handleSubjectView=(sub)=>{
   </div>
   
   {
-    editClass &&
+    options.editSubject &&
+    
     <SubjectEditModal
-    onClose={()=>setEditClass(false)}
-    subjectData={editClass}
+    onClose={() => {setOptions((prev)=>({...prev, editSubject:null}))}}
+    subjectData={options.editSubject}
+    classId={selectedClass.class_id}
+/>}
+
+  {
+    options.addNewSub &&
+    
+    <AddSubjectModal
+    onClose={() => {setOptions((prev)=>({...prev, addNewSub:false}))}}
+    classId={selectedClass.class_id}
 />}
     </div>
   );
