@@ -17,6 +17,8 @@ import { DepartmentalAdminLogin } from "./pages/department_admin/departmentalAdm
 import { ClassesData } from "./pages/department_admin/ClassesData"
 import CreateClass from "./pages/department_admin/ClassCreation"
 import { ManageClasses } from "./pages/department_admin/ManageClasses"
+import { RegisteringStudents } from "./pages/department_admin/RegisterStudents"
+import { RegisterTeacher } from "./pages/department_admin/RegisterTeachers"
 
 function App (){
   
@@ -49,15 +51,17 @@ const router = createBrowserRouter([
     ]
   },
   {
-    path: "/departmental-admin",
+    path: "/departmental_admin",
     element: (
       <ProtectionLayer authRole="departmental_admin">
-        <Structure sideMenu={["todaysLectureAttendance", "attendanceDetail"]} />
+        <Structure sideMenu={['classes', 'manage-classes', 'register-student', 'register-teacher']} />
       </ProtectionLayer>
     ),
     children: [
-      { path: "/departmental-admin/classes", element: <ClassesData /> },
-      { path: "/departmental-admin/create-edit-classes", element: <ManageClasses /> },
+      { path: "/departmental_admin/classes", element: <ClassesData /> },
+      { path: "/departmental_admin/manage-classes", element: <ManageClasses /> },
+      { path: "/departmental_admin/register-student", element: <RegisteringStudents /> },
+      { path: "/departmental_admin/register-teacher", element: <RegisterTeacher /> },
       ]
   },
 

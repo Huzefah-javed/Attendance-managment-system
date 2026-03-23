@@ -5,18 +5,17 @@ import dataRender from "../hooks/DataRender";
 import Loader from "./Loader";
 
 export const SubjectEditModal = ({ onClose, subjectData, classId }) => {
-      console.log("hahaha ",subjectData)
 const teacherInfo =  dataRender(getTeacherData, [subjectData.subject_name])
 const changeTeacher =  useFetchData(changeTeacherForClassSubj)
 const [selectedTeacher, setSelectedTeacher] = useState(null)
 
 
-if (teacherInfo.loading) {
+if (teacherInfo.loading || changeTeacher.loading) {
     return <Loader/>
   }
   
-  if(teacherInfo.err){
-    console.log(teacherInfo.err)
+  if(teacherInfo.err || changeTeacher.error){
+    console.log(teacherInfo.err || changeTeacher.error)
   }
 
 const handleChangeTeacher=async()=>{

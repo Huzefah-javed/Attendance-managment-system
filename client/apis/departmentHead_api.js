@@ -38,3 +38,34 @@ export async function subjectCreation(args){
     const res = await api.post(`departmentAdmin/registerClassSubject`, { subject_name, class_id })
     return res.data
 }
+
+export async function classCreation(args){
+    const class_name = args[0]
+    const res = await api.post(`departmentAdmin/classCreation`, { class_name })
+    return res.data
+}
+
+export async function editClassname(args){
+    const class_name = args[0]
+    const class_id = args[1]
+    const res = await api.post(`departmentAdmin/editClassName`, { class_name, class_id })
+    return res.data
+}
+
+export async function registeringStudent(args){
+    const name = args[0]
+    const roll_number = args[1]
+    const email = args[2]
+    const password = args[3]
+    const class_id = args[4]
+    const res = await api.post(`departmentAdmin/registerStudent`, { name, email, password, roll_number, class_id })
+    return res.data
+}
+
+export async function registeringTeacher(args){
+    const name = args[0]
+    const email = args[1]
+    const password = args[2]
+    const res = await api.post(`departmentAdmin/registerTeacher`, { name, email, password })
+    return res.data
+}

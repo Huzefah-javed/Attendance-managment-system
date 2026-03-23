@@ -1,5 +1,31 @@
+import { useState } from "react";
+import { classCreation } from "../../apis/departmentHead_api";
+import { useFetchData } from "../hooks/data_fetch";
+import Loader from "./Loader";
+
 export const CreateClassModal = ({ onClose, }) => {
 
+ const createClass =  useFetchData(classCreation)
+const [className, setClassName] = useState("")
+
+  
+  if (createClass.loading) {
+      return <Loader/>
+    }
+    
+    if(createClass.error){
+      console.log(createClass.error)
+    }
+
+  const handleCreateClass=async()=>{
+    if(className){
+      await createClass.gettingData([className])
+      setClassName("")
+      onClose();
+    }
+  }
+
+console.log(className)
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
       {/* Glass Backdrop */}
@@ -29,6 +55,7 @@ export const CreateClassModal = ({ onClose, }) => {
               Class Designation
             </label>
             <input 
+              onChange={(e)=>{setClassName(e.target.value)}}
               type="text" 
               autoFocus
               placeholder="e.g. BSSE 5th Semester"

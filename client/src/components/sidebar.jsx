@@ -7,8 +7,7 @@ export default function Sidebar({menu}) {
 
   
     const authData = useSelector(state => state.authInfo);
-    const parentRoute = authData.role === "ADMIN"? "teacher" : authData.role === "STUDENT"? "student": ""
-
+    let parentRoute = authData.role
   const toggle = () => setOpen((v) => !v);
   const close = () => setOpen(false);
 

@@ -1,27 +1,30 @@
 import React, { useState } from 'react';
-import { getClassesData, getClassesDetailData } from '../../../apis/departmentHead_api';
+import { editClassname, getClassesData, getClassesDetailData } from '../../../apis/departmentHead_api';
 import dataRender from '../../hooks/DataRender';
 import Loader from '../../components/Loader';
 import { useFetchData } from '../../hooks/data_fetch';
 import { SubjectEditModal } from '../../components/SubjectEditModal';
 import { AddSubjectModal } from '../../components/AddSubjectModal';
+import { CreateClassModal } from '../../components/ClassCreation';
 
 export const ManageClasses = () => {
     
     const data = dataRender(getClassesData, [])
     const classData = useFetchData(getClassesDetailData)
+    const editClassName = useFetchData(editClassname)
   const [selectedClass, setSelectedClass] = useState(null);
   const [options, setOptions] = useState({
     editSubject:null,
-    addNewSub:null
+    addNewSub:null,
+    addNewClass:null
   });
   
-if (data.loading || classData.loading) {
+if (data.loading || classData.loading || editClassName.loading) {
     return <Loader/>
   }
   
-  if(data.err || classData.error){
-    console.log(data.err || classData.error)
+  if(data.err || classData.error || editClassName.error){
+    console.log(data.err || classData.error || editClassName.error)
   }
   
 
@@ -30,6 +33,10 @@ if (data.loading || classData.loading) {
     await classData.gettingData(cls.class_id)
   };
   
+const handleEditClassname =async()=>{
+    await editClassName.gettingData([selectedClass?.class_name, selectedClass?.class_id])
+}
+
 
  return (
     // Fixed: h-screen on desktop, auto on mobile to allow scrolling
@@ -43,7 +50,7 @@ if (data.loading || classData.loading) {
             <h2 className="text-xs font-black text-slate-800 uppercase tracking-widest">Classes</h2>
           </div>
           <div className="h-7 w-7 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center text-[10px] font-black">
-            04
+            {data?.data?.classes?.length}
           </div>
         </div>
         
@@ -51,7 +58,7 @@ if (data.loading || classData.loading) {
         <div className="flex flex-row md:flex-col overflow-x-auto md:overflow-y-auto custom-scrollbar bg-white">
 
   <div
-  onClick={() => {/* Trigger Create Class Modal */}}
+  onClick={() => {setOptions((prev)=>({...prev, addNewClass:true}))}}
   className="
     min-w-[200px] md:min-w-full p-6 cursor-pointer transition-all
     /* Dashed border to signal 'empty slot' */
@@ -109,11 +116,6 @@ if (data.loading || classData.loading) {
   {/* Sticky Header with Actions */}
   <div className="p-4 md:p-8 bg-white/80 backdrop-blur-md border-b border-slate-200 flex justify-between items-center sticky top-0 z-10">
     <h1 className="text-xl md:text-2xl font-black text-slate-800 tracking-tight">Management Console</h1>
-    <div className="flex gap-2">
-      <button className="px-4 py-2 bg-slate-900 text-white text-[10px] font-black rounded-xl shadow-lg uppercase tracking-widest">
-        Push Updates
-      </button>
-    </div>
   </div>
 
   <div className="p-4 md:p-8 space-y-10">
@@ -124,11 +126,14 @@ if (data.loading || classData.loading) {
         <input 
           type="text" 
           value={selectedClass?.class_name}
+          onChange={(e)=>setSelectedClass((prev)=>({...prev, class_name:e.target.value}))}
           placeholder="Enter Class Name"
+          disabled={!selectedClass}
           className="flex-1 bg-slate-50 p-4 rounded-2xl border border-slate-100 font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-blue-500/10" 
         />
         <button
-
+          disabled={!selectedClass}
+          onClick={handleEditClassname}
          className="px-8 py-4 bg-blue-600 text-white text-xs font-black rounded-2xl hover:bg-blue-700 transition-all shadow-md uppercase tracking-widest">
           Rename Class
         </button>
@@ -164,6 +169,7 @@ if (data.loading || classData.loading) {
 })
 }
       <button 
+      disabled={!selectedClass}
       onClick={() => {setOptions((prev)=>({...prev, addNewSub:true}))}}
       className="w-full py-6 border-2 border-dashed border-slate-200 rounded-[2rem] text-slate-400 font-black text-xs uppercase tracking-[0.3em] hover:bg-white hover:border-blue-400 hover:text-blue-500 transition-all"
       >
@@ -186,8 +192,14 @@ if (data.loading || classData.loading) {
     options.addNewSub &&
     
     <AddSubjectModal
-    onClose={() => {setOptions((prev)=>({...prev, addNewSub:false}))}}
+    onClose={() => {setOptions((prev)=>({...prev, addNewSub:null}))}}
     classId={selectedClass.class_id}
+/>}
+  {
+    options.addNewClass &&
+    
+    <CreateClassModal
+    onClose={() => {setOptions((prev)=>({...prev, addNewClass:null}))}}
 />}
     </div>
   );

@@ -59,6 +59,19 @@ export async function creatingClass(class_name, department_id) {
     return result
 }
 
+export async function editingClassName(class_name, class_id) {
+    let result;
+    try {
+        await classes.updateOne({class_id}, {class_name})
+        result={success: true, statusCode: 201}
+    } catch (error) {
+        error.statusCode = 500
+        error.msg = "Error: cannot saved this document or database connection"
+        result={success: false, msg: error}
+    }
+    return result
+}
+
 export async function classesData(hod_id) {
     let result;
     try {

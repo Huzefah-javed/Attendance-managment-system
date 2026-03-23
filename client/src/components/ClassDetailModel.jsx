@@ -5,7 +5,7 @@ import { getClassesDetailData } from '../../apis/departmentHead_api';
 const ClassDetailModal = ({ onClose, classData }) => {
 
 const data = dataRender(getClassesDetailData, [classData.class_id])
-
+  
     if (data.err) {
         console.log(data.err)
     }

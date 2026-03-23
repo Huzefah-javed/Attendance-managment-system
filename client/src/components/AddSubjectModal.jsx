@@ -1,17 +1,26 @@
 import { useState } from "react";
 import { subjectCreation } from "../../apis/departmentHead_api";
 import { useFetchData } from "../hooks/data_fetch";
+import Loader from "./Loader";
 
 export const AddSubjectModal = ({ onClose, classId}) => {
 
  const createSubject =  useFetchData(subjectCreation)
 const [subName, setSubName] = useState("")
 
+if (createSubject.loading) {
+      return <Loader/>
+    }
+    
+    if(createSubject.error){
+      console.log(createSubject.error)
+    }
 
 const handleAddSubject=async()=>{
   if (subName) { 
    await createSubject.gettingData([classId, subName])
     setSubName("")
+    onClose()
   }
 }
 
