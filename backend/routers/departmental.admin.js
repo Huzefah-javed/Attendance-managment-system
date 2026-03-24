@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { assignTeacherToClass, createClass, editClassName, getClasses, getClassesDetail, registerStudent, registerTeacher, subjectsForClasses } from "../controller/hod.controller.js";
+import { assignTeacherToClass, createClass, editClassName, getClasses, getClassesDetail, getFacultyData, registerStudent, registerTeacher, subjectsForClasses } from "../controller/hod.controller.js";
 import { getAvailableTeacher } from "../controller/teacher.controller.js";
 
 const departmentAdminRouter = Router()
@@ -8,6 +8,7 @@ departmentAdminRouter.get("/", (req, res)=> res.json("Hello from departmental ad
 departmentAdminRouter.post("/classCreation",  createClass)
 departmentAdminRouter.post("/editClassName",  editClassName)
 departmentAdminRouter.get("/getClasses",  getClasses)
+departmentAdminRouter.get("/getFaculty",  getFacultyData)
 departmentAdminRouter.post("/getClassesDetails",  getClassesDetail)
 departmentAdminRouter.post("/registerStudent",  registerStudent)
 departmentAdminRouter.post("/registerTeacher",  registerTeacher)

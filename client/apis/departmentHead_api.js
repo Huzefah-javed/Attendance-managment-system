@@ -69,3 +69,8 @@ export async function registeringTeacher(args){
     const res = await api.post(`departmentAdmin/registerTeacher`, { name, email, password })
     return res.data
 }
+
+export async function getFacultyDetail(){
+    const res = await api.get(`departmentAdmin/getFaculty`)
+    return res.data
+}

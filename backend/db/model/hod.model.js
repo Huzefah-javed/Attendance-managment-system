@@ -159,6 +159,44 @@ export async function classesDetails(class_id) {
     return result
 }
 
+export async function FacultyDetail(department_id) {
+    let result;
+    try {
+      const data =  await teacher.aggregate([
+            {
+                $match:{
+                    department_id
+                }
+            },
+            {
+                $lookup:{
+                    from:'teachers_subjects',
+                    foreignField:'teacher_id',
+                    localField:'id',
+                    as:'subject_details'
+                }
+            },
+            {
+                $project:{
+                    name:1,
+                    email:1,
+                   subjects: {$map: {
+                        input: "$subject_details",
+                        as: "sub",
+                        in: "$$sub.subject_name",     
+                    }}
+            }}
+        ])
+        result={success: true, statusCode: 200, msg:data}
+    } catch (error) {
+        console.log(error)
+        error.statusCode = 500
+        error.msg = "Error: cannot saved this document or database connection"
+        result={success: false, msg: error}
+    }
+    return result
+}
+
 
 
 export async function departmentClassValidation(class_id, hod_id) {

@@ -1,4 +1,4 @@
-import { assigningTeacher, classesData, classesDetails, creatingClass, departmentClassValidation, departmentConfirmation, departmentTeacherValidation, editingClassName, getDepIdByHodId, registeringStudent, registeringTeacher, subjectAssigningToClass } from "../db/model/hod.model.js"
+import { assigningTeacher, classesData, classesDetails, creatingClass, departmentClassValidation, departmentConfirmation, departmentTeacherValidation, editingClassName, FacultyDetail, getDepIdByHodId, registeringStudent, registeringTeacher, subjectAssigningToClass } from "../db/model/hod.model.js"
 
 
 export async function createClass(req, res, next) {
@@ -50,6 +50,20 @@ export async function getClassesDetail(req, res, next) {
     const {class_id} = req.body
     //! Zod validation required here .....
    const response = await classesDetails(class_id)
+           if (response.success){
+            res.json(response)
+       }else{
+           next(response.msg) 
+       }
+}
+
+export async function getFacultyData(req, res, next) {
+ const result = await getDepIdByHodId(req.user.id)
+          if(!result.success){
+            if(result?.msg){return next(validation.msg)}
+            else{return res.status(404).json({statusCode:404, msg:"Department id not found or invalid department id"})}
+          }
+   const response = await FacultyDetail(result.id)
            if (response.success){
             res.json(response)
        }else{

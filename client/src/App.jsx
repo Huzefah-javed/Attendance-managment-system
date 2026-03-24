@@ -18,7 +18,7 @@ import { ClassesData } from "./pages/department_admin/ClassesData"
 import CreateClass from "./pages/department_admin/ClassCreation"
 import { ManageClasses } from "./pages/department_admin/ManageClasses"
 import { RegisteringStudents } from "./pages/department_admin/RegisterStudents"
-import { RegisterTeacher } from "./pages/department_admin/RegisterTeachers"
+import { FacultyManagement } from "./pages/department_admin/FacultyManagement"
 
 function App (){
   
@@ -61,7 +61,7 @@ const router = createBrowserRouter([
       { path: "/departmental_admin/classes", element: <ClassesData /> },
       { path: "/departmental_admin/manage-classes", element: <ManageClasses /> },
       { path: "/departmental_admin/register-student", element: <RegisteringStudents /> },
-      { path: "/departmental_admin/register-teacher", element: <RegisterTeacher /> },
+      { path: "/departmental_admin/register-teacher", element: <FacultyManagement /> },
       ]
   },
 
