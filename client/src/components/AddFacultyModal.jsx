@@ -15,6 +15,7 @@ const AddFacultyModal = ({ onClose }) => {
     e.preventDefault();
     if (faculty.name && faculty.email && faculty.password) {
      await teacherRegister.gettingData([faculty.name, faculty.email, faculty.password])
+     
     }
         onClose();
   };

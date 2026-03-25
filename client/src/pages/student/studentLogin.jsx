@@ -61,6 +61,26 @@ const navigate = useNavigate()
       </div>
 
 <div>
+          <span className="text-gray-600 mr-2 sm:mr-4 text-sm sm:text-base">
+        Or Login as super Admin :
+      </span>
+    
+      <Link
+        to="/superAdminLogin" 
+        className="
+          text-indigo-600           
+          hover:text-indigo-800
+          font-semibold      
+          transition-colors           
+          border-b-2                  
+          border-indigo-500     
+          hover:border-indigo-700  
+          pb-0.5                      
+        "
+      >
+        Teacher
+      </Link>
+
 
       <span className="text-gray-600 mr-2 sm:mr-4 text-sm sm:text-base">
         Or Login as department head :

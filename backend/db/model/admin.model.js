@@ -123,6 +123,36 @@ export async function departmentRegistering(department_name, institution_id) {
 
 return result
 }
+export async function getInstituteIdByAdminId(adminId) {
+    let result
+    try {
+            const response = await institution.findOne({owned_by:adminId}, {institutionId:1})
+        result = {success: true, instituteId: response.institutionId}
+    } catch (error) {
+        console.log(error)
+        error.message = "Internal server error"
+        error.status = 500
+        result = {msg:error, success:false}
+    
+    }
+    return result
+}
+
+export async function allDepartmentsByInstituteId(instId) {
+    let result
+    try {
+            const response = await department.find({institution_id:instId}, {department_name:1, department_id:1})
+        result = {statusCode: 200, success: true, msg:response}
+    } catch (error) {
+        console.log(error)
+        error.message = "Internal server error"
+        error.status = 500
+    
+    result = {msg:error, success:false}
+}
+
+return result
+}
 
                         
     export async function validatingDepartmentAndHodById(Hod_id, department_id, institution_id) {

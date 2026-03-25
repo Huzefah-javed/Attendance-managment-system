@@ -1,4 +1,4 @@
-import { appointHOD, departmentRegistering, instituteConfirmation, instituteRegistering, signupDepartmentalAdmin, signupSuperAdmin, validatingDepartmentAndHodById } from "../db/model/admin.model.js"
+import { allDepartmentsByInstituteId, appointHOD, departmentRegistering, getInstituteIdByAdminId, instituteConfirmation, instituteRegistering, signupDepartmentalAdmin, signupSuperAdmin, validatingDepartmentAndHodById } from "../db/model/admin.model.js"
 
 export async function superAdminSignup(req, res, next) {
     const {name,email, password}  = req.body
@@ -24,6 +24,20 @@ export async function departmentalAdminLogin(req, res, next) {
       }
    
        const response = await signupDepartmentalAdmin(name, email, password, "departmental_admin", institutional_id)
+       if (response.success) {
+            res.json(response)
+       }else{
+           next(response.msg) 
+       }
+    }
+
+export async function getDepartmentInfo(req, res, next) {
+        const data = await getInstituteIdByAdminId(req.user.id)
+          if(!data.success){
+        if(data?.msg){return next(data.msg)}
+        else{return res.status(404).json({statusCode:404, msg:"No any registered Institute found"})}
+      }
+      const response = await allDepartmentsByInstituteId(data.instituteId)
        if (response.success) {
             res.json(response)
        }else{

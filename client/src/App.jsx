@@ -19,6 +19,8 @@ import CreateClass from "./pages/department_admin/ClassCreation"
 import { ManageClasses } from "./pages/department_admin/ManageClasses"
 import { RegisteringStudents } from "./pages/department_admin/RegisterStudents"
 import { FacultyManagement } from "./pages/department_admin/FacultyManagement"
+import { AdminLogin } from "./pages/super_admin/AdminLogin"
+import { InstitutionDepartments } from "./pages/super_admin/InstitutionDepartments"
 
 function App (){
   
@@ -64,6 +66,17 @@ const router = createBrowserRouter([
       { path: "/departmental_admin/register-teacher", element: <FacultyManagement /> },
       ]
   },
+  {
+    path: "/super_admin",
+    element: (
+      <ProtectionLayer authRole="super_admin">
+        <Structure sideMenu={['classes', 'manage-classes', 'register-student', 'register-teacher']} />
+      </ProtectionLayer>
+    ),
+    children: [
+        {path:"/super_admin/departments", element:<InstitutionDepartments/>}
+      ]
+  },
 
   { 
     path: "/", 
@@ -72,7 +85,7 @@ const router = createBrowserRouter([
       { path: "/teacher-login", element: <TeacherLogin /> },
       { path: "/student-login", element: <StudentLogin /> },
       { path: "/department-head-Login", element: <DepartmentalAdminLogin /> },
-      // { path: "/admin-head-Login", element: <AdminLogin /> },
+      { path: "/superAdminLogin", element: <AdminLogin /> },
     ]
    },
 

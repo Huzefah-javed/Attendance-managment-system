@@ -66,7 +66,7 @@ async function login({ id, name, email, role, status }, res) {
 
 export async function superAdminLogin(req, res, next) {
       const {email, password} = req.body;
-      // we have to validate here when using ZOD
+      //! we have to validate here when using ZOD
     console.log({email, password})
  
     const response = await loginVerificationAsSuperAdmin({email,password})

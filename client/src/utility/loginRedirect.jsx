@@ -31,13 +31,12 @@ useEffect(()=>{
 
     useEffect(()=>{
         if (loading) return;
-        console.log("here is the shit ", authData)
         if (authData.role === "teacher") {
         navigate("/teacher/assignClasses")    
     }else if(authData.role === "departmental_admin"){
-        navigate("/departmental-admin/classes")    
+        navigate("/departmental_admin/classes")    
     }else if(authData.role === "super_admin"){
-        navigate("/super-admin/main")    
+        navigate("/super_admin/departments")    
     }else{
         navigate("/student-login")    
     }
